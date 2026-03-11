@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D Pain Map — Dorsal Scapular Nerve</title>
+<style>
+  * { margin: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a0c;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: #fff;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ── Top bar ── */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background: #111114;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+    z-index: 10;
+  }
+  .topbar h1 { font-size: 16px; font-weight: 700; }
+  .model-tabs { display: flex; gap: 6px; }
+  .mtab {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #999;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .mtab:hover { color: #ccc; background: rgba(255,255,255,0.1); }
+  .mtab.active {
+    background: rgba(50,170,220,0.15);
+    border-color: rgba(50,170,220,0.4);
+    color: #32aadc;
+  }
+
+  /* ── Main content ── */
+  .main { flex: 1; display: flex; overflow: hidden; }
+
+  /* ── Viewer ── */
+  .viewer { flex: 1; position: relative; }
+  .viewer iframe { width: 100%; height: 100%; border: none; }
+  .viewer-label {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    font-size: 10px;
+    color: #444;
+    pointer-events: none;
+  }
+  /* Annotation filter controls */
+  .ann-controls {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 5;
+    display: flex;
+    gap: 6px;
+  }
+  .ann-btn {
+    background: rgba(10,10,14,0.85);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #999;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .ann-btn:hover { color: #ccc; background: rgba(20,20,26,0.9); }
+  .ann-btn.active { background: rgba(50,170,220,0.2); border-color: rgba(50,170,220,0.35); color: #32aadc; }
+
+  /* ── Side panel ── */
+  .panel {
+    width: 320px;
+    flex-shrink: 0;
+    background: #111114;
+    border-left: 1px solid rgba(255,255,255,0.06);
+    overflow-y: auto;
+    padding: 16px;
+  }
+  .panel h2 { font-size: 14px; font-weight: 700; margin-bottom: 12px; color: #ddd; }
+  .panel h3 { font-size: 12px; font-weight: 700; margin: 14px 0 6px; display: flex; align-items: center; gap: 8px; }
+  .panel p { font-size: 12px; color: #888; line-height: 1.6; margin-bottom: 8px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; display: inline-block; }
+  .d-red { background: #ff3b30; box-shadow: 0 0 6px #ff3b30; }
+  .d-orange { background: #ff9500; box-shadow: 0 0 6px #ff9500; }
+  .d-blue { background: #32aadc; box-shadow: 0 0 6px #32aadc; }
+  .d-yellow { background: #ffd60a; box-shadow: 0 0 6px #ffd60a; }
+
+  .divider { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 14px 0; }
+  .tip {
+    background: rgba(50,170,220,0.08);
+    border: 1px solid rgba(50,170,220,0.15);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 11px;
+    color: #7cc;
+    line-height: 1.5;
+    margin-top: 12px;
+  }
+  .tip strong { color: #9de; }
+  .credit { font-size: 10px; color: #444; margin-top: 16px; line-height: 1.5; }
+  .credit a { color: #556; text-decoration: underline; }
+
+  .what-to-say {
+    background: rgba(255,59,48,0.06);
+    border: 1px solid rgba(255,59,48,0.15);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 11px;
+    color: #c99;
+    line-height: 1.6;
+    margin-top: 10px;
+  }
+  .what-to-say strong { color: #ebb; }
+  .what-to-say code {
+    display: block;
+    background: rgba(0,0,0,0.3);
+    padding: 8px 10px;
+    border-radius: 5px;
+    margin-top: 6px;
+    font-size: 11px;
+    color: #ddd;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    font-family: inherit;
+  }
+  #ann-log {
+    font-size: 10px;
+    color: #555;
+    margin-top: 8px;
+    max-height: 120px;
+    overflow-y: auto;
+    line-height: 1.4;
+    display: none;
+  }
+  #ann-log.visible { display: block; }
+</style>
+<script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.12.1.js"></script>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>Your Pain Map — 3D Anatomy</h1>
+  <div class="model-tabs">
+    <button class="mtab active" id="tab-scapular" onclick="switchModel('scapular', this)">Scapular Muscles + Nerves</button>
+    <button class="mtab" id="tab-spine" onclick="switchModel('spine', this)">Spine + Nerves</button>
+    <button class="mtab" id="tab-fullbody" onclick="switchModel('fullbody', this)">Full Body Anatomy</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="viewer">
+    <iframe id="model-frame" src="" allow="autoplay; fullscreen; xr-spatial-tracking"
+      allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+    <div class="ann-controls" id="ann-controls" style="display:none;">
+      <button class="ann-btn active" id="btn-all" onclick="filterAnnotations('all')">Annotations: ON</button>
+      <button class="ann-btn" id="btn-none" onclick="filterAnnotations('none')">Annotations: OFF</button>
+    </div>
+    <div class="viewer-label" id="viewer-credit"></div>
+  </div>
+
+  <div class="panel">
+    <h2>What You're Looking At</h2>
+
+    <p>Orbit the 3D model to see the back view. Click annotations on the model for built-in labels.</p>
+
+    <hr class="divider">
+
+    <h3><span class="dot d-red"></span> Your Pain Zone</h3>
+    <p>Sharp pain along the <strong style="color:#ccc">medial border of your right scapula</strong> (the inner edge of the shoulder blade). This is the rhomboid muscle area — the muscles running between the spine and the scapula bone.</p>
+
+    <h3><span class="dot d-orange"></span> Levator Scapulae</h3>
+    <p>The muscle running from the upper cervical spine (C1-C4) down to the <strong style="color:#ccc">superior angle of the scapula</strong> (upper inner corner). Secondary tension point.</p>
+
+    <h3><span class="dot d-blue"></span> Nerve Origin: C3-C5</h3>
+    <p>The <strong style="color:#ccc">dorsal scapular nerve</strong> originates from C3-C5 nerve roots in the cervical spine. On the model, look for the <strong style="color:#ffd60a">yellow nerve branches</strong> exiting the spine at neck level.</p>
+
+    <h3><span class="dot d-yellow"></span> The Nerve Path</h3>
+    <p>The dorsal scapular nerve pierces through the <strong style="color:#ccc">middle scalene muscle</strong>, then descends under the levator scapulae, running along the medial scapular border. This is why C-spine misalignment causes shoulder blade pain.</p>
+
+    <hr class="divider">
+
+    <div class="tip">
+      <strong>Why your adjustment works ~70%:</strong> When C1/C2 alignment is corrected, it relieves compensatory strain at C3-C5, decompressing the dorsal scapular nerve root. The 30% miss rate likely means the subluxation vector doesn't always decompress that specific nerve root.
+    </div>
+
+    <div class="what-to-say">
+      <strong>Tell your chiropractor:</strong>
+      <code>"Sharp nerve pain at the medial border of my right scapula, reproducing with right cervical rotation and extension. I believe it follows the dorsal scapular nerve distribution, originating from C3-C5 irritation secondary to upper cervical subluxation."</code>
+    </div>
+
+    <hr class="divider">
+
+    <div id="model-description" style="font-size:11px; color:#666; line-height:1.5;"></div>
+    <div id="ann-log"></div>
+    <div class="credit" id="credits"></div>
+  </div>
+</div>
+
+<script>
+var MODELS = {
+  scapular: {
+    uid: 'eec158baf9ef45dba5d23a07d1f7d7e8',
+    name: 'Scapular Muscles',
+    credit: '3D Atlas of Neurological Surgery (CC BY-SA)',
+    url: 'https://sketchfab.com/3d-models/scapular-muscles-eec158baf9ef45dba5d23a07d1f7d7e8',
+    desc: 'Shows the scapula bone, back muscles (rhomboids, levator scapulae, lats), nerves (yellow), and vasculature. Rotate to the back view to see the medial scapular border where your pain is.',
+    useApi: true
+  },
+  spine: {
+    uid: 'c6bde6cd35764f108dde933ad2c34142',
+    name: 'Nerves + Skeletal Cross-section',
+    credit: 'Ebers (Sketchfab)',
+    url: 'https://sketchfab.com/3d-models/nerves-with-a-skeletal-cross-section-c6bde6cd35764f108dde933ad2c34142',
+    desc: 'Central and peripheral nervous system with a cross-section of the skull and vertebral column. Individual vertebrae are visible — you can count the cervical levels (C1-C7) and see spinal nerves branching from each segment.',
+    useApi: false
+  },
+  fullbody: {
+    uid: '4f706245d70a49c99bafb48e04b965e0',
+    name: 'Male Anatomy - Medical Model',
+    credit: 'Novaky (Sketchfab)',
+    url: 'https://sketchfab.com/3d-models/male-anatomy-medical-model-4f706245d70a49c99bafb48e04b965e0',
+    desc: 'Complete 3D anatomy study model: skeleton, skull, muscles, digestive, respiratory, and circulatory systems. The left side shows internal systems; the right side has skin/muscles removed for clarity. Use the built-in system annotations to toggle views.',
+    useApi: false
+  }
+};
+
+var currentModel = null;
+var sketchfabApi = null;
+var allAnnotations = [];
+var annotationFilter = 'all';
+
+// Keywords to match for "relevant" annotations on the Atlas model
+// We'll discover the actual annotation names at runtime and filter
+var RELEVANT_KEYWORDS = [
+  'scapul', 'rhomboid', 'levator', 'trapez', 'spine', 'spinal',
+  'nerve', 'cervic', 'dorsal', 'c3', 'c4', 'c5', 'c6', 'c7',
+  'vertebr', 'thorac', 'brachial', 'plexus', 'scalene',
+  'suprascapul', 'infraspina', 'serratus', 'erector'
+];
+
+function switchModel(key, btnEl) {
+  if (key === currentModel) return;
+  currentModel = key;
+  sketchfabApi = null;
+  allAnnotations = [];
+  var m = MODELS[key];
+
+  // Update tabs
+  document.querySelectorAll('.mtab').forEach(function(b) { b.classList.remove('active'); });
+  if (btnEl) btnEl.classList.add('active');
+
+  // Show annotation controls for all models
+  document.getElementById('ann-controls').style.display = 'flex';
+
+  // Simple iframe embed — works reliably for all models
+  var annParam = (m.useApi && annotationFilter === 'none') ? '0' : '1';
+  var src = 'https://sketchfab.com/models/' + m.uid + '/embed'
+    + '?autostart=1&ui_theme=dark&ui_stop=0&ui_inspector=0'
+    + '&ui_watermark=0&ui_hint=0&ui_ar=0&ui_vr=0'
+    + '&ui_help=0&ui_settings=0&ui_annotations=' + annParam
+    + '&scrollwheel=1&transparent=0&preload=1';
+  document.getElementById('model-frame').src = src;
+
+  // Update description + credits
+  document.getElementById('model-description').textContent = m.desc;
+  document.getElementById('viewer-credit').textContent = m.credit;
+
+  var credits = document.getElementById('credits');
+  while (credits.firstChild) credits.removeChild(credits.firstChild);
+  credits.appendChild(document.createTextNode('Model: '));
+  var link = document.createElement('a');
+  link.href = m.url;
+  link.target = '_blank';
+  link.textContent = m.name;
+  credits.appendChild(link);
+  credits.appendChild(document.createTextNode(' by ' + m.credit));
+}
+
+function filterAnnotations(mode) {
+  annotationFilter = mode;
+
+  // Update buttons
+  document.getElementById('btn-all').classList.toggle('active', mode === 'all');
+  document.getElementById('btn-none').classList.toggle('active', mode === 'none');
+
+  // Reload iframe with annotation toggle
+  if (currentModel) {
+    var m = MODELS[currentModel];
+    var annParam = (mode === 'none') ? '0' : '1';
+    var src = 'https://sketchfab.com/models/' + m.uid + '/embed'
+      + '?autostart=1&ui_theme=dark&ui_stop=0&ui_inspector=0'
+      + '&ui_watermark=0&ui_hint=0&ui_ar=0&ui_vr=0'
+      + '&ui_help=0&ui_settings=0&ui_annotations=' + annParam
+      + '&scrollwheel=1&transparent=0&preload=1';
+    document.getElementById('model-frame').src = src;
+  }
+}
+
+// Init
+switchModel('scapular', document.getElementById('tab-scapular'));
+</script>
+</body>
+</html>
