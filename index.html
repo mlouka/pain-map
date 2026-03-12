@@ -319,7 +319,7 @@ var MODELS = {
     name: 'Scapular Muscles',
     credit: '3D Atlas of Neurological Surgery (CC BY-SA)',
     url: 'https://sketchfab.com/3d-models/scapular-muscles-eec158baf9ef45dba5d23a07d1f7d7e8',
-    desc: 'Shows the scapula bone, back muscles (rhomboids, levator scapulae, lats), nerves (yellow), and vasculature. Rotate to the back view to see the medial scapular border where your pain is.',
+    desc: 'Shows the scapula bone, back muscles (rhomboids, levator scapulae, lats), nerves (yellow), and vasculature. Rotate to the back view to see the medial scapular border where your pain is. Custom pain annotations added.',
     useApi: true
   },
   spine: {
@@ -343,10 +343,12 @@ var MODELS = {
 var currentModel = null;
 var annotationFilter = 'all';
 var panelOpen = true;
+var sketchfabApi = null;
 
 function switchModel(key, btnEl) {
   if (key === currentModel) return;
   currentModel = key;
+  sketchfabApi = null;
   var m = MODELS[key];
 
   document.querySelectorAll('.mtab').forEach(function(b) { b.classList.remove('active'); });
@@ -354,6 +356,71 @@ function switchModel(key, btnEl) {
 
   document.getElementById('ann-controls').style.display = 'flex';
 
+  if (m.useApi) {
+    // Use the Viewer API for the Atlas model so we can add custom annotations
+    var iframe = document.getElementById('model-frame');
+    // Clear the iframe src completely — API needs a blank iframe
+    iframe.removeAttribute('src');
+
+    var client = new Sketchfab(iframe);
+    client.init(m.uid, {
+      success: function(api) {
+        sketchfabApi = api;
+        api.start();
+        api.addEventListener('viewerready', function() {
+          console.log('Viewer ready — adding custom annotations');
+
+          // Get annotation list to discover existing ones and the coordinate space
+          api.getAnnotationList(function(err, annotations) {
+            if (!err && annotations.length > 0) {
+              // Log all existing annotations for coordinate discovery
+              annotations.forEach(function(ann, i) {
+                console.log('Annotation [' + i + ']: ' + (ann.name || 'unnamed'));
+              });
+
+              // Use the first annotation's camera to understand the coordinate system,
+              // then add our custom pain zone annotations
+              api.getAnnotation(0, function(err2, ann0) {
+                if (!err2) {
+                  console.log('Annotation 0 position:', JSON.stringify(ann0.worldPosition));
+                  console.log('Annotation 0 camera pos:', JSON.stringify(ann0.eye));
+                  console.log('Annotation 0 camera target:', JSON.stringify(ann0.target));
+                }
+                addCustomAnnotations(api);
+              });
+            } else {
+              addCustomAnnotations(api);
+            }
+          });
+        });
+      },
+      error: function() {
+        console.error('Viewer API init failed — falling back to iframe embed');
+        // Fallback to simple embed
+        loadSimpleEmbed(m);
+      },
+      autostart: 1,
+      ui_stop: 0,
+      ui_inspector: 0,
+      ui_watermark_link: 0,
+      ui_hint: 0,
+      ui_ar: 0,
+      ui_vr: 0,
+      ui_help: 0,
+      ui_settings: 0,
+      ui_annotations: 1,
+      scrollwheel: 1,
+      transparent: 0,
+      preload: 1
+    });
+  } else {
+    loadSimpleEmbed(m);
+  }
+
+  updateCredits(m);
+}
+
+function loadSimpleEmbed(m) {
   var annParam = (annotationFilter === 'none') ? '0' : '1';
   var src = 'https://sketchfab.com/models/' + m.uid + '/embed'
     + '?autostart=1&ui_theme=dark&ui_stop=0&ui_inspector=0'
@@ -361,7 +428,9 @@ function switchModel(key, btnEl) {
     + '&ui_help=0&ui_settings=0&ui_annotations=' + annParam
     + '&scrollwheel=1&transparent=0&preload=1';
   document.getElementById('model-frame').src = src;
+}
 
+function updateCredits(m) {
   document.getElementById('model-description').textContent = m.desc;
   document.getElementById('viewer-credit').textContent = m.credit;
 
@@ -376,12 +445,103 @@ function switchModel(key, btnEl) {
   credits.appendChild(document.createTextNode(' by ' + m.credit));
 }
 
+function addCustomAnnotations(api) {
+  // Remove any previously added custom annotations (indices beyond the original 41)
+  api.getAnnotationList(function(err, anns) {
+    if (!err && anns.length > 41) {
+      for (var i = anns.length - 1; i >= 41; i--) {
+        api.removeAnnotation(i, function() {});
+      }
+    }
+    // Small delay to let removals process, then add new ones
+    setTimeout(function() { placeAnnotations(api); }, 300);
+  });
+}
+
+function placeAnnotations(api) {
+  // Coordinates discovered from the model's existing annotations:
+  // C5: [-18, -1413, -79], Dorsal scapular n.: [-40, -1292, -12]
+  // Infraspinatus: [-132, -1298, -20], Supraspinatus: [-114, -1334, -35]
+  // X = lateral (more negative = more right/lateral)
+  // Y = vertical (more negative = lower)
+  // Z = depth (more negative = more posterior)
+
+  // WORLD coordinates from lastComputedWorldPosition:
+  // C5: [-18, -1203, 140], Middle scalene: [-40, -1205, 119]
+  // Dorsal scapular n.: [-40, -1123, 28], Dorsal scapular a.: [-57, -1115, 21]
+  // Supraspinatus: [-114, -1150, 67], Infraspinatus: [-132, -1131, 33]
+  // Teres minor: [-159, -1140, 20]
+  // X = lateral (negative = right), Y = vertical (negative = lower), Z = anterior(+)/posterior(-)
+
+  // Camera for back view of scapula area
+  var backEye = [-100, -1130, -200];
+  var backTarget = [-80, -1135, 30];
+
+  // Camera for cervical close-up
+  var cervEye = [-50, -1200, -180];
+  var cervTarget = [-25, -1200, 130];
+
+  // 1. PAIN ZONE — Medial scapular border (between DSN at X=-40 and infraspinatus at X=-132)
+  // Posterior surface (Z lower than the existing annotations which are on anterior/lateral surface)
+  api.createAnnotationFromWorldPosition(
+    [-75, -1135, -15],   // medial border, mid-scapula height, posterior
+    backEye,
+    backTarget,
+    '\u26a0\ufe0f PAIN ZONE — Medial Scapular Border',
+    'Sharp nerve pain along the **inner edge of the right shoulder blade**. This is the **rhomboid area** where the dorsal scapular nerve descends. Pain reproduces with right cervical rotation and neck extension. This is the primary complaint area.',
+    function(e, idx) { if (!e) console.log('Pain zone annotation created at', idx + 1); }
+  );
+
+  // 2. PAIN ZONE LOWER — inferior portion of medial border (below infraspinatus level)
+  api.createAnnotationFromWorldPosition(
+    [-85, -1100, -10],   // lower medial border
+    backEye,
+    backTarget,
+    '\u26a0\ufe0f PAIN ZONE (lower) — Rhomboid Area',
+    'The pain often extends down the medial scapular border into the lower rhomboid region. The **dorsal scapular nerve** runs the full length of this border, innervating both rhomboid major and minor.',
+    function(e, idx) { if (!e) console.log('Pain zone lower annotation at', idx + 1); }
+  );
+
+  // 3. NERVE ORIGIN — C3-C5 (near C5 at [-18, -1203, 140] and middle scalene at [-40, -1205, 119])
+  api.createAnnotationFromWorldPosition(
+    [-28, -1210, 130],   // between C5 and middle scalene, slightly lateral
+    cervEye,
+    cervTarget,
+    '\u{1f535} NERVE ORIGIN — C3-C5',
+    'The **dorsal scapular nerve** originates from C3-C5 nerve roots here in the cervical spine. It pierces through the **middle scalene muscle** (annotation #6 nearby) before descending to the scapula. **Upper cervical misalignment** (C1/C2) creates compensatory strain at these levels.',
+    function(e, idx) { if (!e) console.log('Nerve origin annotation at', idx + 1); }
+  );
+
+  // 4. LEVATOR SCAPULAE — superior angle of scapula (above supraspinatus at [-114, -1150, 67])
+  api.createAnnotationFromWorldPosition(
+    [-80, -1160, 20],   // superior angle, between spine and scapula, posterior
+    backEye,
+    backTarget,
+    '\u{1f7e0} Levator Scapulae Insertion',
+    'The **levator scapulae** inserts at the superior angle of the scapula. Innervated by C3-C4 (and sometimes the dorsal scapular nerve). This is a **secondary tension point** — often tight when the primary pain zone is active.',
+    function(e, idx) { if (!e) console.log('Levator annotation at', idx + 1); }
+  );
+}
+
 function filterAnnotations(mode) {
   annotationFilter = mode;
   document.getElementById('btn-all').classList.toggle('active', mode === 'all');
   document.getElementById('btn-none').classList.toggle('active', mode === 'none');
 
-  if (currentModel) {
+  if (sketchfabApi) {
+    // Use API to toggle annotations without reloading
+    sketchfabApi.getAnnotationList(function(err, annotations) {
+      if (err) return;
+      annotations.forEach(function(ann, i) {
+        if (mode === 'none') {
+          sketchfabApi.hideAnnotation(i, function() {});
+        } else {
+          sketchfabApi.showAnnotation(i, function() {});
+        }
+      });
+    });
+  } else if (currentModel) {
+    // Reload iframe for non-API models
     var m = MODELS[currentModel];
     var annParam = (mode === 'none') ? '0' : '1';
     var src = 'https://sketchfab.com/models/' + m.uid + '/embed'
@@ -401,7 +561,7 @@ function togglePanel() {
   btn.textContent = panelOpen ? 'Hide Info' : 'Show Info';
 }
 
-// Start collapsed on mobile for max 3D viewer space
+// Start collapsed on mobile
 if (window.innerWidth <= 768) {
   panelOpen = false;
   document.addEventListener('DOMContentLoaded', function() {
