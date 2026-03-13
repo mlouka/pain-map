@@ -3,13 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>3D Pain Map — Dorsal Scapular Nerve</title>
+<title>Pain Map — Dorsal Scapular Nerve</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+  :root {
+    --bg: #0a0a0c;
+    --panel: #111114;
+    --border: rgba(255,255,255,0.06);
+    --warm: #c4a882;
+    --warm-dim: rgba(196,168,130,0.12);
+    --warm-border: rgba(196,168,130,0.25);
+    --pain: #c4503a;
+    --nerve: #4a8fb8;
+    --text: #e8e4df;
+    --text-dim: #999;
+    --text-muted: #666;
+    --serif: 'Source Serif 4', Georgia, serif;
+    --sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
   * { margin: 0; box-sizing: border-box; }
+
   body {
-    background: #0a0a0c;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    color: #fff;
+    background: var(--bg);
+    font-family: var(--sans);
+    color: var(--text);
     height: 100vh;
     height: 100dvh;
     display: flex;
@@ -17,560 +36,652 @@
     overflow: hidden;
   }
 
-  /* ── Top bar ── */
-  .topbar {
+  .main {
+    flex: 1;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 16px;
-    background: #111114;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    flex-shrink: 0;
-    z-index: 10;
-    gap: 10px;
+    overflow: hidden;
+    min-height: 0;
   }
-  .topbar h1 { font-size: 16px; font-weight: 700; white-space: nowrap; }
-  .model-tabs {
-    display: flex;
-    gap: 6px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    flex-shrink: 1;
-    min-width: 0;
-  }
-  .model-tabs::-webkit-scrollbar { display: none; }
-  .mtab {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: #999;
-    padding: 6px 14px;
-    border-radius: 6px;
-    font-size: 12px;
-    cursor: pointer;
-    font-family: inherit;
-    transition: all 0.2s;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-  .mtab:hover { color: #ccc; background: rgba(255,255,255,0.1); }
-  .mtab.active {
-    background: rgba(50,170,220,0.15);
-    border-color: rgba(50,170,220,0.4);
-    color: #32aadc;
-  }
-
-  /* ── Main content ── */
-  .main { flex: 1; display: flex; overflow: hidden; min-height: 0; }
 
   /* ── Viewer ── */
-  .viewer { flex: 1; position: relative; min-height: 0; }
-  .viewer iframe { width: 100%; height: 100%; border: none; }
-  .viewer-label {
-    position: absolute;
-    bottom: 8px;
-    left: 8px;
-    font-size: 10px;
-    color: #444;
-    pointer-events: none;
+  .viewer {
+    flex: 1;
+    position: relative;
+    min-height: 0;
+    background: var(--bg);
   }
-  .ann-controls {
+  .viewer iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+
+  .stabilize-btn {
     position: absolute;
-    top: 8px;
-    left: 8px;
+    top: 12px;
+    left: 12px;
     z-index: 5;
-    display: flex;
-    gap: 6px;
-  }
-  .ann-btn {
     background: rgba(10,10,14,0.85);
     backdrop-filter: blur(8px);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: #999;
-    padding: 5px 10px;
-    border-radius: 6px;
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: var(--text-dim);
+    padding: 7px 14px;
+    border-radius: 8px;
     font-size: 11px;
+    font-family: var(--sans);
+    display: flex;
+    align-items: center;
+    gap: 6px;
     cursor: pointer;
-    font-family: inherit;
     transition: all 0.2s;
+    user-select: none;
   }
-  .ann-btn:hover { color: #ccc; background: rgba(20,20,26,0.9); }
-  .ann-btn.active { background: rgba(50,170,220,0.2); border-color: rgba(50,170,220,0.35); color: #32aadc; }
+  .stabilize-btn:hover { color: #ccc; }
+  .stabilize-btn.locked {
+    border-color: var(--warm-border);
+    color: var(--warm);
+    background: rgba(196,168,130,0.08);
+  }
 
-  /* ── Side panel ── */
+  /* ── Panel ── */
   .panel {
-    width: 320px;
+    width: 340px;
     flex-shrink: 0;
-    background: #111114;
-    border-left: 1px solid rgba(255,255,255,0.06);
+    background: var(--panel);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .step-indicator {
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .step-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+  .step-dot:hover { background: rgba(255,255,255,0.25); }
+  .step-dot.active {
+    background: var(--warm);
+    box-shadow: 0 0 8px rgba(196,168,130,0.3);
+    width: 24px;
+    border-radius: 4px;
+  }
+  .step-num {
+    font-size: 11px;
+    color: #555;
+    margin-left: auto;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .step-content {
+    flex: 1;
+    padding: 20px;
     overflow-y: auto;
-    padding: 16px;
     -webkit-overflow-scrolling: touch;
   }
-  .panel h2 { font-size: 14px; font-weight: 700; margin-bottom: 12px; color: #ddd; }
-  .panel h3 { font-size: 12px; font-weight: 700; margin: 14px 0 6px; display: flex; align-items: center; gap: 8px; }
-  .panel p { font-size: 12px; color: #888; line-height: 1.6; margin-bottom: 8px; }
-  .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; display: inline-block; }
-  .d-red { background: #ff3b30; box-shadow: 0 0 6px #ff3b30; }
-  .d-orange { background: #ff9500; box-shadow: 0 0 6px #ff9500; }
-  .d-blue { background: #32aadc; box-shadow: 0 0 6px #32aadc; }
-  .d-yellow { background: #ffd60a; box-shadow: 0 0 6px #ffd60a; }
+  .step-title {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 14px;
+    line-height: 1.3;
+  }
+  .step-voice {
+    font-size: 14px;
+    color: #bbb;
+    line-height: 1.7;
+    font-style: italic;
+    margin-bottom: 16px;
+    padding-left: 12px;
+    border-left: 2px solid rgba(196,168,130,0.3);
+  }
+  .step-detail {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
 
-  .divider { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 14px 0; }
-  .tip {
-    background: rgba(50,170,220,0.08);
-    border: 1px solid rgba(50,170,220,0.15);
+  .step-nav {
+    padding: 14px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .nav-btn {
+    flex: 1;
+    padding: 10px;
     border-radius: 8px;
-    padding: 10px 12px;
-    font-size: 11px;
-    color: #7cc;
-    line-height: 1.5;
-    margin-top: 12px;
-  }
-  .tip strong { color: #9de; }
-  .credit { font-size: 10px; color: #444; margin-top: 16px; line-height: 1.5; }
-  .credit a { color: #556; text-decoration: underline; }
-
-  .what-to-say {
-    background: rgba(255,59,48,0.06);
-    border: 1px solid rgba(255,59,48,0.15);
-    border-radius: 8px;
-    padding: 10px 12px;
-    font-size: 11px;
-    color: #c99;
-    line-height: 1.6;
-    margin-top: 10px;
-  }
-  .what-to-say strong { color: #ebb; }
-  .what-to-say code {
-    display: block;
-    background: rgba(0,0,0,0.3);
-    padding: 8px 10px;
-    border-radius: 5px;
-    margin-top: 6px;
-    font-size: 11px;
-    color: #ddd;
-    line-height: 1.5;
-    white-space: pre-wrap;
-    font-family: inherit;
-  }
-  #ann-log {
-    font-size: 10px;
-    color: #555;
-    margin-top: 8px;
-    max-height: 120px;
-    overflow-y: auto;
-    line-height: 1.4;
-    display: none;
-  }
-  #ann-log.visible { display: block; }
-
-  /* ── Mobile: panel toggle button ── */
-  .panel-toggle {
-    display: none;
-    position: absolute;
-    bottom: 12px;
-    right: 12px;
-    z-index: 15;
-    background: rgba(10,10,14,0.9);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.12);
-    color: #ccc;
-    padding: 10px 16px;
-    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.03);
+    color: var(--text-dim);
     font-size: 13px;
-    font-weight: 600;
+    font-family: var(--sans);
+    font-weight: 500;
+    text-align: center;
     cursor: pointer;
-    font-family: inherit;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    transition: all 0.2s;
+    user-select: none;
   }
-  .panel-toggle:active { background: rgba(50,170,220,0.2); color: #32aadc; }
+  .nav-btn:hover { background: rgba(255,255,255,0.06); color: #ccc; }
+  .nav-btn.primary {
+    background: var(--warm-dim);
+    border-color: var(--warm-border);
+    color: var(--warm);
+  }
+  .nav-btn.primary:hover { background: rgba(196,168,130,0.2); }
+  .nav-btn.disabled { opacity: 0.3; pointer-events: none; }
 
-  /* ═══════════════════════════════════════════
-     MOBILE RESPONSIVE
-     ═══════════════════════════════════════════ */
+  .loading-overlay {
+    position: absolute;
+    inset: 0;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: opacity 0.5s;
+  }
+  .loading-overlay.hidden { opacity: 0; pointer-events: none; }
+  .loading-text { font-size: 13px; color: var(--text-muted); margin-top: 12px; }
+  .loading-spinner {
+    width: 32px; height: 32px;
+    border: 2px solid rgba(255,255,255,0.1);
+    border-top-color: var(--warm);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
   @media (max-width: 768px) {
-    /* Topbar: stack title above tabs */
-    .topbar {
-      flex-direction: column;
-      align-items: stretch;
-      padding: 8px 12px;
-      gap: 8px;
-    }
-    .topbar h1 { font-size: 14px; text-align: center; }
-    .model-tabs { justify-content: center; }
-    .mtab { padding: 6px 10px; font-size: 11px; }
-
-    /* Main: stack vertically */
     .main { flex-direction: column; }
-
-    /* Viewer takes most of the space */
-    .viewer {
-      flex: 1;
-      min-height: 45vh;
-      min-height: 45dvh;
-    }
-
-    /* Panel slides up from bottom, collapsible */
+    .viewer { flex: 1; min-height: 50vh; min-height: 50dvh; }
     .panel {
-      width: 100%;
+      width: 100%; height: 43vh; height: 43dvh;
       border-left: none;
       border-top: 1px solid rgba(255,255,255,0.08);
-      max-height: 40vh;
-      max-height: 40dvh;
-      padding: 14px 16px;
-      transition: max-height 0.3s ease, padding 0.3s ease;
-      overflow-y: auto;
+      border-radius: 16px 16px 0 0;
+      flex-shrink: 0;
     }
-    .panel.collapsed {
-      max-height: 0;
-      padding: 0 16px;
-      overflow: hidden;
-      border-top: none;
+    .drag-handle {
+      width: 36px; height: 4px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 2px;
+      margin: 8px auto 0;
+      flex-shrink: 0;
     }
-
-    /* Show the toggle button on mobile */
-    .panel-toggle { display: block; }
-
-    /* Annotation controls: adjust position */
-    .ann-controls { top: 6px; left: 6px; }
-    .ann-btn { padding: 6px 10px; font-size: 11px; }
-
-    /* Viewer credit: move above panel toggle */
-    .viewer-label { bottom: 55px; }
+    .step-indicator { padding: 10px 16px 8px; }
+    .step-content { padding: 12px 16px; }
+    .step-title { font-size: 18px; }
+    .step-voice { font-size: 13px; }
+    .step-detail { font-size: 11px; }
+    .step-nav { padding: 10px 16px; }
+    .nav-btn { padding: 8px; }
+    .stabilize-btn { top: 8px; left: 8px; font-size: 10px; padding: 6px 10px; }
+    #show-all-btn { top: 40px !important; }
   }
-
-  /* Extra small phones */
   @media (max-width: 380px) {
-    .topbar h1 { font-size: 13px; }
-    .mtab { padding: 5px 8px; font-size: 10px; }
-    .panel { padding: 12px; }
-    .panel h2 { font-size: 13px; }
-    .panel p, .tip, .what-to-say { font-size: 11px; }
+    .step-title { font-size: 16px; }
+    .step-voice { font-size: 12px; }
   }
+  .drag-handle { display: none; }
+  @media (max-width: 768px) { .drag-handle { display: block; } }
 </style>
 <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.12.1.js"></script>
 </head>
 <body>
 
-<div class="topbar">
-  <h1>Your Pain Map — 3D Anatomy</h1>
-  <div class="model-tabs">
-    <button class="mtab active" id="tab-scapular" onclick="switchModel('scapular', this)">Scapular Muscles + Nerves</button>
-    <button class="mtab" id="tab-spine" onclick="switchModel('spine', this)">Spine + Nerves</button>
-    <button class="mtab" id="tab-fullbody" onclick="switchModel('fullbody', this)">Full Body Anatomy</button>
-  </div>
-</div>
-
 <div class="main">
   <div class="viewer">
-    <iframe id="model-frame" src="" allow="autoplay; fullscreen; xr-spatial-tracking"
+    <iframe id="model-frame" allow="autoplay; fullscreen; xr-spatial-tracking"
       allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
-    <div class="ann-controls" id="ann-controls" style="display:none;">
-      <button class="ann-btn active" id="btn-all" onclick="filterAnnotations('all')">Annotations: ON</button>
-      <button class="ann-btn" id="btn-none" onclick="filterAnnotations('none')">Annotations: OFF</button>
+
+    <button class="stabilize-btn locked" id="stabilize-btn" onclick="toggleStabilize()">
+      <span id="lock-icon">&#x1f512;</span>
+      <span id="lock-label">Guided View</span>
+    </button>
+
+    <button class="stabilize-btn" id="show-all-btn" onclick="toggleShowAll()" style="top:48px;">
+      Show All
+    </button>
+
+    <div class="loading-overlay" id="loading">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Loading 3D model...</div>
     </div>
-    <div class="viewer-label" id="viewer-credit"></div>
-    <button class="panel-toggle" id="panel-toggle" onclick="togglePanel()">Info Panel</button>
   </div>
 
   <div class="panel" id="panel">
-    <h2>What You're Looking At</h2>
+    <div class="drag-handle"></div>
 
-    <p>Orbit the 3D model to see the back view. Click annotations on the model for built-in labels.</p>
+    <div class="step-indicator" id="step-indicator"></div>
 
-    <hr class="divider">
-
-    <h3><span class="dot d-red"></span> Your Pain Zone</h3>
-    <p>Sharp pain along the <strong style="color:#ccc">medial border of your right scapula</strong> (the inner edge of the shoulder blade). This is the rhomboid muscle area — the muscles running between the spine and the scapula bone.</p>
-
-    <h3><span class="dot d-orange"></span> Levator Scapulae</h3>
-    <p>The muscle running from the upper cervical spine (C1-C4) down to the <strong style="color:#ccc">superior angle of the scapula</strong> (upper inner corner). Secondary tension point.</p>
-
-    <h3><span class="dot d-blue"></span> Nerve Origin: C3-C5</h3>
-    <p>The <strong style="color:#ccc">dorsal scapular nerve</strong> originates from C3-C5 nerve roots in the cervical spine. On the model, look for the <strong style="color:#ffd60a">yellow nerve branches</strong> exiting the spine at neck level.</p>
-
-    <h3><span class="dot d-yellow"></span> The Nerve Path</h3>
-    <p>The dorsal scapular nerve pierces through the <strong style="color:#ccc">middle scalene muscle</strong>, then descends under the levator scapulae, running along the medial scapular border. This is why C-spine misalignment causes shoulder blade pain.</p>
-
-    <hr class="divider">
-
-    <div class="tip">
-      <strong>Why your adjustment works ~70%:</strong> When C1/C2 alignment is corrected, it relieves compensatory strain at C3-C5, decompressing the dorsal scapular nerve root. The 30% miss rate likely means the subluxation vector doesn't always decompress that specific nerve root.
+    <div class="step-content" id="step-content">
+      <div class="step-title">Loading...</div>
     </div>
 
-    <div class="what-to-say">
-      <strong>Tell your chiropractor:</strong>
-      <code>"Sharp nerve pain at the medial border of my right scapula, reproducing with right cervical rotation and extension. I believe it follows the dorsal scapular nerve distribution, originating from C3-C5 irritation secondary to upper cervical subluxation."</code>
+    <div class="step-nav">
+      <button class="nav-btn disabled" id="btn-prev" onclick="goStep(currentStep - 1)">Previous</button>
+      <button class="nav-btn primary" id="btn-next" onclick="goStep(currentStep + 1)">Next &#x2192;</button>
     </div>
-
-    <hr class="divider">
-
-    <div id="model-description" style="font-size:11px; color:#666; line-height:1.5;"></div>
-    <div id="ann-log"></div>
-    <div class="credit" id="credits"></div>
   </div>
 </div>
 
 <script>
-var MODELS = {
-  scapular: {
-    uid: 'eec158baf9ef45dba5d23a07d1f7d7e8',
-    name: 'Scapular Muscles',
-    credit: '3D Atlas of Neurological Surgery (CC BY-SA)',
-    url: 'https://sketchfab.com/3d-models/scapular-muscles-eec158baf9ef45dba5d23a07d1f7d7e8',
-    desc: 'Shows the scapula bone, back muscles (rhomboids, levator scapulae, lats), nerves (yellow), and vasculature. Rotate to the back view to see the medial scapular border where your pain is. Custom pain annotations added.',
-    useApi: true
-  },
-  spine: {
-    uid: 'c6bde6cd35764f108dde933ad2c34142',
-    name: 'Nerves + Skeletal Cross-section',
-    credit: 'Ebers (Sketchfab)',
-    url: 'https://sketchfab.com/3d-models/nerves-with-a-skeletal-cross-section-c6bde6cd35764f108dde933ad2c34142',
-    desc: 'Central and peripheral nervous system with a cross-section of the skull and vertebral column. Individual vertebrae are visible — you can count the cervical levels (C1-C7) and see spinal nerves branching from each segment.',
-    useApi: false
-  },
-  fullbody: {
-    uid: '4f706245d70a49c99bafb48e04b965e0',
-    name: 'Male Anatomy - Medical Model',
-    credit: 'Novaky (Sketchfab)',
-    url: 'https://sketchfab.com/3d-models/male-anatomy-medical-model-4f706245d70a49c99bafb48e04b965e0',
-    desc: 'Complete 3D anatomy study model: skeleton, skull, muscles, digestive, respiratory, and circulatory systems. The left side shows internal systems; the right side has skin/muscles removed for clarity. Use the built-in system annotations to toggle views.',
-    useApi: false
-  }
-};
+// ═══════════════════════════════════════
+// STEP DEFINITIONS
+// ═══════════════════════════════════════
+// Coordinates discovered from model annotations:
+// DSN: [-47.3,-1319.7,-26.3], C5: [-26.5,-1409.2,-92.6]
+// Rhomboid minor: [-29.9,-1337.2,-13.7], Middle scalene: [-37.8,-1405.6,-80.6]
+// Coordinate system: X=lateral(neg=right), Y=vertical(neg=lower), Z=anterior(+)/posterior(-)
 
-var currentModel = null;
-var annotationFilter = 'all';
-var panelOpen = true;
+var STEPS = [
+  {
+    title: 'Pain Location',
+    voice: 'The inner edge of my right shoulder blade, and it radiates down my arm. There\'s a constant ache as a baseline, and sharp pain on top when I move my head. When the ache is really bad, I know something is off.',
+    detail: 'The primary pain is along the <strong>medial border of the scapula</strong>. The arm radiation suggests involvement beyond just the dorsal scapular nerve \u2014 possibly the <strong>brachial plexus</strong>, which this model shows.',
+    // Based on DSA annotation [6] camera — shows scapular border area
+    eye: [-114, -948, 216],
+    target: [-42, -1133, 4],
+    showAnnotations: [5, 6, 10, 15],
+    highlightAnnotation: 5,
+    showCustom: true
+  },
+  {
+    title: 'Pain Character',
+    voice: 'There are two layers. A constant dull ache that\'s always there, and a sharp, nerve-like pain on top of that \u2014 especially when I turn my head to the right or tilt my neck back.',
+    detail: 'The <strong>dorsal scapular nerve</strong> and <strong>dorsal scapular artery</strong> run together along this border. The <strong>suprascapular nerve</strong> also passes through this area, innervating the muscles on the back of the shoulder blade. If any of these are compressed, it could contribute to the pain.',
+    // Based on DSN annotation [5] camera — shows nerve + rhomboid area
+    eye: [-90, -956, 232],
+    target: [-41, -1165, 36],
+    showAnnotations: [5, 6, 10, 11, 15],
+    highlightAnnotation: 6,
+    showCustom: true
+  },
+  {
+    title: 'Aggravating Factors',
+    voice: 'Turning my head to the right makes it worse. Tilting my neck up or back makes it worse. It often comes back after sleeping \u2014 I don\'t know what position triggers it, but I frequently wake up with it.',
+    detail: 'Research confirms that <strong>cervical rotation and extension</strong> aggravate dorsal scapular nerve symptoms. Sleep position (especially prone with head rotated) is also documented as a trigger. The scalene muscles in the neck are a known compression point for this nerve.',
+    // Based on middle scalene annotation [1] camera — shows cervical/scalene area
+    eye: [-95, -1289, 189],
+    target: [-16, -1181, 87],
+    showAnnotations: [0, 1, 2, 5, 6, 22, 23],
+    highlightAnnotation: 1,
+    showCustom: false
+  },
+  {
+    title: 'Response to Adjustments',
+    voice: 'Cervical adjustments help about half the time. C6, C3, and C1 were adjusted most recently and gave temporary relief. When the activator tool hits the right spot going down my spine, it sometimes fully releases the pain \u2014 but not always. I\'m tracking my visits to find the pattern.',
+    detail: 'The variable response may depend on which cervical level is adjusted and the specific vector of correction. The fact that the <strong>activator tool</strong> can reproduce and sometimes release the pain at specific points along the spine suggests a <strong>segmental compression</strong> that shifts between visits.',
+    // Pulled-back view of cervical spine showing C5-Th1
+    eye: [-120, -1200, 250],
+    target: [-30, -1300, 60],
+    showAnnotations: [5, 6, 22, 23, 24, 25, 26, 27],
+    highlightAnnotation: 22,
+    showCustom: false
+  },
+  {
+    title: 'Suspected Nerve Involvement',
+    voice: 'I think this involves nerves that all share the same C5-C6 corridor. The dorsal scapular nerve explains my shoulder blade pain. The arm radiation goes into my deltoid and when it\'s bad, into my biceps \u2014 that matches the axillary and musculocutaneous nerves, both from C5-C6. They all pass through the scalenes. Could C5-C6 compression be hitting everything at once?',
+    detail: 'All from <strong>C5-C6</strong>, all through the <strong>scalene corridor</strong>: (1) <strong>Dorsal scapular nerve</strong> \u2014 medial scapular border, (2) <strong>Suprascapular nerve</strong> \u2014 deep shoulder, (3) <strong>Axillary nerve</strong> (C5-C6) \u2014 deltoid radiation, (4) <strong>Musculocutaneous nerve</strong> (C5-C7) \u2014 biceps radiation when severe. Head extension + right rotation narrows the right C5-C6 foramina, compressing all of these simultaneously.',
+    eye: [-90, -955, 232],
+    target: [-41, -1165, 36],
+    showAnnotations: [1, 3, 5, 6, 10, 15, 27, 33, 37],
+    highlightAnnotation: 27,
+    showCustom: true
+  }
+];
+
+var currentStep = 0;
+var cameraLocked = true;
+var isAnimating = false;
 var sketchfabApi = null;
+var totalBuiltinAnnotations = 0;
+var painAnnotationIndex = null;
 
-function switchModel(key, btnEl) {
-  if (key === currentModel) return;
-  currentModel = key;
-  sketchfabApi = null;
-  var m = MODELS[key];
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+var iframe = document.getElementById('model-frame');
+var client = new Sketchfab(iframe);
 
-  document.querySelectorAll('.mtab').forEach(function(b) { b.classList.remove('active'); });
-  if (btnEl) btnEl.classList.add('active');
-
-  document.getElementById('ann-controls').style.display = 'flex';
-
-  if (m.useApi) {
-    // Use the Viewer API for the Atlas model so we can add custom annotations
-    var iframe = document.getElementById('model-frame');
-    // Clear the iframe src completely — API needs a blank iframe
-    iframe.removeAttribute('src');
-
-    var client = new Sketchfab(iframe);
-    client.init(m.uid, {
-      success: function(api) {
-        sketchfabApi = api;
-        api.start();
-        api.addEventListener('viewerready', function() {
-          console.log('Viewer ready — adding custom annotations');
-
-          // Get annotation list to discover existing ones and the coordinate space
-          api.getAnnotationList(function(err, annotations) {
-            if (!err && annotations.length > 0) {
-              // Log all existing annotations for coordinate discovery
-              annotations.forEach(function(ann, i) {
-                console.log('Annotation [' + i + ']: ' + (ann.name || 'unnamed'));
-              });
-
-              // Use the first annotation's camera to understand the coordinate system,
-              // then add our custom pain zone annotations
-              api.getAnnotation(0, function(err2, ann0) {
-                if (!err2) {
-                  console.log('Annotation 0 position:', JSON.stringify(ann0.worldPosition));
-                  console.log('Annotation 0 camera pos:', JSON.stringify(ann0.eye));
-                  console.log('Annotation 0 camera target:', JSON.stringify(ann0.target));
-                }
-                addCustomAnnotations(api);
-              });
-            } else {
-              addCustomAnnotations(api);
-            }
-          });
-        });
-      },
-      error: function() {
-        console.error('Viewer API init failed — falling back to iframe embed');
-        // Fallback to simple embed
-        loadSimpleEmbed(m);
-      },
-      autostart: 1,
-      ui_stop: 0,
-      ui_inspector: 0,
-      ui_watermark_link: 0,
-      ui_hint: 0,
-      ui_ar: 0,
-      ui_vr: 0,
-      ui_help: 0,
-      ui_settings: 0,
-      ui_annotations: 1,
-      scrollwheel: 1,
-      transparent: 0,
-      preload: 1
-    });
-  } else {
-    loadSimpleEmbed(m);
-  }
-
-  updateCredits(m);
-}
-
-function loadSimpleEmbed(m) {
-  var annParam = (annotationFilter === 'none') ? '0' : '1';
-  var src = 'https://sketchfab.com/models/' + m.uid + '/embed'
-    + '?autostart=1&ui_theme=dark&ui_stop=0&ui_inspector=0'
-    + '&ui_watermark=0&ui_hint=0&ui_ar=0&ui_vr=0'
-    + '&ui_help=0&ui_settings=0&ui_annotations=' + annParam
-    + '&scrollwheel=1&transparent=0&preload=1';
-  document.getElementById('model-frame').src = src;
-}
-
-function updateCredits(m) {
-  document.getElementById('model-description').textContent = m.desc;
-  document.getElementById('viewer-credit').textContent = m.credit;
-
-  var credits = document.getElementById('credits');
-  while (credits.firstChild) credits.removeChild(credits.firstChild);
-  credits.appendChild(document.createTextNode('Model: '));
-  var link = document.createElement('a');
-  link.href = m.url;
-  link.target = '_blank';
-  link.textContent = m.name;
-  credits.appendChild(link);
-  credits.appendChild(document.createTextNode(' by ' + m.credit));
-}
-
-function addCustomAnnotations(api) {
-  // Remove any previously added custom annotations (indices beyond the original 41)
-  api.getAnnotationList(function(err, anns) {
-    if (!err && anns.length > 41) {
-      for (var i = anns.length - 1; i >= 41; i--) {
-        api.removeAnnotation(i, function() {});
-      }
-    }
-    // Small delay to let removals process, then add new ones
-    setTimeout(function() { placeAnnotations(api); }, 300);
-  });
-}
-
-function placeAnnotations(api) {
-  // Coordinates discovered from the model's existing annotations:
-  // C5: [-18, -1413, -79], Dorsal scapular n.: [-40, -1292, -12]
-  // Infraspinatus: [-132, -1298, -20], Supraspinatus: [-114, -1334, -35]
-  // X = lateral (more negative = more right/lateral)
-  // Y = vertical (more negative = lower)
-  // Z = depth (more negative = more posterior)
-
-  // WORLD coordinates from lastComputedWorldPosition:
-  // C5: [-18, -1203, 140], Middle scalene: [-40, -1205, 119]
-  // Dorsal scapular n.: [-40, -1123, 28], Dorsal scapular a.: [-57, -1115, 21]
-  // Supraspinatus: [-114, -1150, 67], Infraspinatus: [-132, -1131, 33]
-  // Teres minor: [-159, -1140, 20]
-  // X = lateral (negative = right), Y = vertical (negative = lower), Z = anterior(+)/posterior(-)
-
-  // Camera for back view of scapula area
-  var backEye = [-100, -1130, -200];
-  var backTarget = [-80, -1135, 30];
-
-  // Camera for cervical close-up
-  var cervEye = [-50, -1200, -180];
-  var cervTarget = [-25, -1200, 130];
-
-  // 1. PAIN ZONE — Medial scapular border (between DSN at X=-40 and infraspinatus at X=-132)
-  // Posterior surface (Z lower than the existing annotations which are on anterior/lateral surface)
-  api.createAnnotationFromWorldPosition(
-    [-75, -1135, -15],   // medial border, mid-scapula height, posterior
-    backEye,
-    backTarget,
-    '\u26a0\ufe0f PAIN ZONE — Medial Scapular Border',
-    'Sharp nerve pain along the **inner edge of the right shoulder blade**. This is the **rhomboid area** where the dorsal scapular nerve descends. Pain reproduces with right cervical rotation and neck extension. This is the primary complaint area.',
-    function(e, idx) { if (!e) console.log('Pain zone annotation created at', idx + 1); }
-  );
-
-  // 2. PAIN ZONE LOWER — inferior portion of medial border (below infraspinatus level)
-  api.createAnnotationFromWorldPosition(
-    [-85, -1100, -10],   // lower medial border
-    backEye,
-    backTarget,
-    '\u26a0\ufe0f PAIN ZONE (lower) — Rhomboid Area',
-    'The pain often extends down the medial scapular border into the lower rhomboid region. The **dorsal scapular nerve** runs the full length of this border, innervating both rhomboid major and minor.',
-    function(e, idx) { if (!e) console.log('Pain zone lower annotation at', idx + 1); }
-  );
-
-  // 3. NERVE ORIGIN — C3-C5 (near C5 at [-18, -1203, 140] and middle scalene at [-40, -1205, 119])
-  api.createAnnotationFromWorldPosition(
-    [-28, -1210, 130],   // between C5 and middle scalene, slightly lateral
-    cervEye,
-    cervTarget,
-    '\u{1f535} NERVE ORIGIN — C3-C5',
-    'The **dorsal scapular nerve** originates from C3-C5 nerve roots here in the cervical spine. It pierces through the **middle scalene muscle** (annotation #6 nearby) before descending to the scapula. **Upper cervical misalignment** (C1/C2) creates compensatory strain at these levels.',
-    function(e, idx) { if (!e) console.log('Nerve origin annotation at', idx + 1); }
-  );
-
-  // 4. LEVATOR SCAPULAE — superior angle of scapula (above supraspinatus at [-114, -1150, 67])
-  api.createAnnotationFromWorldPosition(
-    [-80, -1160, 20],   // superior angle, between spine and scapula, posterior
-    backEye,
-    backTarget,
-    '\u{1f7e0} Levator Scapulae Insertion',
-    'The **levator scapulae** inserts at the superior angle of the scapula. Innervated by C3-C4 (and sometimes the dorsal scapular nerve). This is a **secondary tension point** — often tight when the primary pain zone is active.',
-    function(e, idx) { if (!e) console.log('Levator annotation at', idx + 1); }
-  );
-}
-
-function filterAnnotations(mode) {
-  annotationFilter = mode;
-  document.getElementById('btn-all').classList.toggle('active', mode === 'all');
-  document.getElementById('btn-none').classList.toggle('active', mode === 'none');
-
-  if (sketchfabApi) {
-    // Use API to toggle annotations without reloading
-    sketchfabApi.getAnnotationList(function(err, annotations) {
-      if (err) return;
-      annotations.forEach(function(ann, i) {
-        if (mode === 'none') {
-          sketchfabApi.hideAnnotation(i, function() {});
-        } else {
-          sketchfabApi.showAnnotation(i, function() {});
+client.init('12e0591a2e794b159576510ddf61abae', {
+  success: function(api) {
+    sketchfabApi = api;
+    api.start();
+    api.addEventListener('viewerready', function() {
+      api.getAnnotationList(function(err, anns) {
+        if (!err) {
+          totalBuiltinAnnotations = anns.length;
+          for (var i = 0; i < anns.length; i++) {
+            api.hideAnnotation(i, function() {});
+          }
         }
+
+        api.createAnnotationFromWorldPosition(
+          [-55, -1280, -30],
+          [-200, -1100, -250],
+          [-60, -1280, -20],
+          'Pain Zone \u2014 Medial Scapular Border',
+          'Sharp nerve pain along the inner edge of the right shoulder blade.',
+          function(e, idx) {
+            if (!e) painAnnotationIndex = idx;
+            api.setCameraEasing('easeInOutCubic');
+            // Don't move camera when clicking annotations
+            api.setAnnotationCameraTransition(true, true);
+
+            // Toggle tooltip on annotation click
+            api.addEventListener('annotationSelect', function(annIdx) {
+              if (window._lastSelectedAnnotation === annIdx) {
+                api.unselectAnnotation(function() {});
+                api.hideAnnotationTooltips(function() {});
+                window._lastSelectedAnnotation = null;
+              } else {
+                window._lastSelectedAnnotation = annIdx;
+                api.showAnnotationTooltip(annIdx, function() {});
+              }
+            });
+
+            // In guided mode, snap camera back if user tries to orbit
+            // Grace period so annotation clicks aren't blocked
+            var lastClickTime = 0;
+            api.addEventListener('annotationSelect', function() {
+              lastClickTime = Date.now();
+            });
+            api.addEventListener('camerastart', function() {
+              var timeSinceClick = Date.now() - lastClickTime;
+              if (cameraLocked && !isAnimating && timeSinceClick > 500) {
+                var step = STEPS[currentStep];
+                api.setCameraLookAt(step.eye, step.target, 0.5, function() {});
+              }
+            });
+
+            document.getElementById('loading').classList.add('hidden');
+            renderStep(0);
+            goToCamera(0);
+            updateAnnotations(0);
+          }
+        );
       });
     });
-  } else if (currentModel) {
-    // Reload iframe for non-API models
-    var m = MODELS[currentModel];
-    var annParam = (mode === 'none') ? '0' : '1';
-    var src = 'https://sketchfab.com/models/' + m.uid + '/embed'
-      + '?autostart=1&ui_theme=dark&ui_stop=0&ui_inspector=0'
-      + '&ui_watermark=0&ui_hint=0&ui_ar=0&ui_vr=0'
-      + '&ui_help=0&ui_settings=0&ui_annotations=' + annParam
-      + '&scrollwheel=1&transparent=0&preload=1';
-    document.getElementById('model-frame').src = src;
+  },
+  error: function() {
+    var el = document.getElementById('loading');
+    el.textContent = 'Failed to load 3D model';
+    el.style.color = '#c4503a';
+    el.style.fontSize = '14px';
+  },
+  autostart: 1,
+  camera: 0,
+  annotations_visible: 0,
+  preload: 1,
+  ui_animations: 0,
+  ui_infos: 0,
+  ui_stop: 0,
+  ui_inspector: 0,
+  ui_hint: 0,
+  ui_ar: 0,
+  ui_help: 0,
+  ui_settings: 0,
+  ui_vr: 0,
+  ui_fullscreen: 0,
+  ui_annotations: 0,
+  ui_watermark: 0,
+  ui_theme: 'dark',
+  scrollwheel: 0,
+  transparent: 0
+});
+
+// ═══════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════
+function goStep(idx) {
+  if (idx < 0 || idx >= STEPS.length) return;
+  currentStep = idx;
+  window._lastSelectedAnnotation = null;
+  if (sketchfabApi) {
+    sketchfabApi.unselectAnnotation(function() {});
+    sketchfabApi.hideAnnotationTooltips(function() {});
+  }
+  renderStep(idx);
+  goToCamera(idx);
+  updateAnnotations(idx);
+}
+
+function renderStep(idx) {
+  var step = STEPS[idx];
+
+  // Build step indicator using DOM methods
+  var indicator = document.getElementById('step-indicator');
+  while (indicator.firstChild) indicator.removeChild(indicator.firstChild);
+  for (var i = 0; i < STEPS.length; i++) {
+    var dot = document.createElement('div');
+    dot.className = 'step-dot' + (i === idx ? ' active' : '');
+    dot.setAttribute('data-idx', i);
+    dot.addEventListener('click', function() {
+      goStep(parseInt(this.getAttribute('data-idx')));
+    });
+    indicator.appendChild(dot);
+  }
+  var numSpan = document.createElement('span');
+  numSpan.className = 'step-num';
+  numSpan.textContent = (idx + 1) + ' / ' + STEPS.length;
+  indicator.appendChild(numSpan);
+
+  // Build step content using DOM methods
+  var content = document.getElementById('step-content');
+  while (content.firstChild) content.removeChild(content.firstChild);
+
+  var title = document.createElement('div');
+  title.className = 'step-title';
+  title.textContent = step.title;
+  content.appendChild(title);
+
+  var voice = document.createElement('div');
+  voice.className = 'step-voice';
+  voice.textContent = '\u201c' + step.voice + '\u201d';
+  content.appendChild(voice);
+
+  // Detail uses safe static HTML defined in STEPS — no user input
+  var detail = document.createElement('div');
+  detail.className = 'step-detail';
+  detail.textContent = step.detail.replace(/<\/?strong>/g, '');
+  // Re-add bold formatting safely
+  var parts = step.detail.split(/<\/?strong>/);
+  if (parts.length > 1) {
+    detail.textContent = '';
+    for (var p = 0; p < parts.length; p++) {
+      if (p % 2 === 1) {
+        var b = document.createElement('strong');
+        b.textContent = parts[p];
+        b.style.color = '#999';
+        detail.appendChild(b);
+      } else {
+        detail.appendChild(document.createTextNode(parts[p]));
+      }
+    }
+  }
+  content.appendChild(detail);
+
+  // Add research + closing on the last step only
+  if (idx === STEPS.length - 1) {
+    var hr = document.createElement('div');
+    hr.style.cssText = 'border-top:1px solid rgba(255,255,255,0.06);margin:20px 0 16px;';
+    content.appendChild(hr);
+
+    var researchBox = document.createElement('div');
+    researchBox.style.cssText = 'margin-bottom:14px;';
+    var rh = document.createElement('h4');
+    rh.style.cssText = 'font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#555;margin-bottom:8px;font-weight:500;';
+    rh.textContent = 'Research I Found';
+    researchBox.appendChild(rh);
+
+    var links = [
+      ['https://pmc.ncbi.nlm.nih.gov/articles/PMC5596970/', 'Dorsal scapular nerve neuropathy \u2014 PMC narrative review'],
+      ['https://www.ncbi.nlm.nih.gov/books/NBK459343/', 'Anatomy: Dorsal Scapular Nerve \u2014 StatPearls'],
+      ['https://chiroup.com/blog/dorsal-scapular-neuropathy-is-more-common-than-expected', 'DSN neuropathy more common than expected \u2014 ChiroUp']
+    ];
+    links.forEach(function(l) {
+      var a = document.createElement('a');
+      a.href = l[0];
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.textContent = l[1];
+      a.style.cssText = 'font-size:11px;color:#4a8fb8;display:block;margin-bottom:5px;text-decoration:none;line-height:1.4;';
+      researchBox.appendChild(a);
+    });
+    content.appendChild(researchBox);
+
+    var closing = document.createElement('div');
+    closing.style.cssText = 'border-top:1px solid rgba(255,255,255,0.03);padding-top:12px;';
+    var cp = document.createElement('p');
+    cp.style.cssText = 'font-size:11px;color:#555;line-height:1.6;font-style:italic;';
+    cp.textContent = 'I put this together to help communicate where my pain is as clearly as possible. All clinical decisions are yours \u2014 I just want to help you help me.';
+    closing.appendChild(cp);
+    content.appendChild(closing);
+
+    // Spacer at bottom for scroll room
+    var spacer = document.createElement('div');
+    spacer.style.cssText = 'height:20px;';
+    content.appendChild(spacer);
+  }
+
+  content.scrollTop = 0;
+
+  // Nav buttons
+  var prevBtn = document.getElementById('btn-prev');
+  prevBtn.className = 'nav-btn' + (idx === 0 ? ' disabled' : '');
+
+  var nextBtn = document.getElementById('btn-next');
+  if (idx === STEPS.length - 1) {
+    nextBtn.className = 'nav-btn disabled';
+    nextBtn.textContent = 'End';
+  } else {
+    nextBtn.className = 'nav-btn primary';
+    nextBtn.textContent = 'Next \u2192';
   }
 }
 
-function togglePanel() {
-  panelOpen = !panelOpen;
-  var panel = document.getElementById('panel');
-  var btn = document.getElementById('panel-toggle');
-  panel.classList.toggle('collapsed', !panelOpen);
-  btn.textContent = panelOpen ? 'Hide Info' : 'Show Info';
-}
-
-// Start collapsed on mobile
-if (window.innerWidth <= 768) {
-  panelOpen = false;
-  document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('panel').classList.add('collapsed');
-    document.getElementById('panel-toggle').textContent = 'Show Info';
+function goToCamera(idx) {
+  if (!sketchfabApi) return;
+  var step = STEPS[idx];
+  isAnimating = true;
+  sketchfabApi.setCameraLookAt(step.eye, step.target, 2.5, function() {
+    isAnimating = false;
   });
 }
 
-switchModel('scapular', document.getElementById('tab-scapular'));
+function updateAnnotations(idx) {
+  if (!sketchfabApi) return;
+  var step = STEPS[idx];
+
+  for (var i = 0; i < totalBuiltinAnnotations; i++) {
+    sketchfabApi.hideAnnotation(i, function() {});
+  }
+
+  if (step.showAnnotations) {
+    step.showAnnotations.forEach(function(annIdx) {
+      sketchfabApi.showAnnotation(annIdx, function() {});
+    });
+  }
+
+  if (painAnnotationIndex !== null) {
+    if (step.showCustom) {
+      sketchfabApi.showAnnotation(painAnnotationIndex, function() {});
+    } else {
+      sketchfabApi.hideAnnotation(painAnnotationIndex, function() {});
+    }
+  }
+
+  // Auto-highlight the key annotation for this step
+  if (step.highlightAnnotation !== undefined) {
+    setTimeout(function() {
+      sketchfabApi.showAnnotationTooltip(step.highlightAnnotation, function() {});
+    }, 800);
+  }
+}
+
+// ═══════════════════════════════════════
+// STABILIZE / FREE LOOK
+// ═══════════════════════════════════════
+function toggleStabilize() {
+  cameraLocked = !cameraLocked;
+  var btn = document.getElementById('stabilize-btn');
+  var icon = document.getElementById('lock-icon');
+  var label = document.getElementById('lock-label');
+
+  if (cameraLocked) {
+    btn.classList.add('locked');
+    icon.textContent = '\u{1f512}';
+    label.textContent = 'Guided View';
+    sketchfabApi.unselectAnnotation(function() {});
+    sketchfabApi.hideAnnotationTooltips(function() {});
+    window._lastSelectedAnnotation = null;
+    // Snap back to current step
+    isAnimating = true;
+    var step = STEPS[currentStep];
+    sketchfabApi.setCameraLookAt(step.eye, step.target, 2, function() {
+      isAnimating = false;
+    });
+  } else {
+    btn.classList.remove('locked');
+    icon.textContent = '\u{1f513}';
+    label.textContent = 'Free Look';
+  }
+}
+
+// ═══════════════════════════════════════
+// SHOW ALL ANNOTATIONS
+// ═══════════════════════════════════════
+var showingAll = false;
+
+function toggleShowAll() {
+  showingAll = !showingAll;
+  var btn = document.getElementById('show-all-btn');
+
+  if (showingAll) {
+    btn.classList.add('locked');
+    btn.textContent = 'Step View';
+    // Show all annotations
+    for (var i = 0; i < totalBuiltinAnnotations; i++) {
+      sketchfabApi.showAnnotation(i, function() {});
+    }
+    if (painAnnotationIndex !== null) {
+      sketchfabApi.showAnnotation(painAnnotationIndex, function() {});
+    }
+  } else {
+    btn.classList.remove('locked');
+    btn.textContent = 'Show All';
+    // Revert to current step's annotations
+    updateAnnotations(currentStep);
+  }
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+    e.preventDefault();
+    goStep(currentStep + 1);
+  } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    goStep(currentStep - 1);
+  }
+});
 </script>
 </body>
 </html>
