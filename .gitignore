@@ -1,1 +1,6 @@
 .vercel
+.DS_Store
+.claude/
+.superpowers/
+app/
+node_modules/

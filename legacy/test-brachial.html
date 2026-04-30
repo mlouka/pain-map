@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brachial Plexus — API Test</title>
+<style>
+  * { margin: 0; box-sizing: border-box; }
+  body { background: #0a0a0c; color: #fff; font-family: -apple-system, sans-serif; height: 100vh; display: flex; flex-direction: column; }
+  #viewer { flex: 1; }
+  #viewer iframe { width: 100%; height: 100%; border: none; }
+  #log {
+    height: 200px; overflow-y: auto; padding: 12px; font-size: 12px;
+    font-family: monospace; background: #111; border-top: 1px solid #333;
+    line-height: 1.6;
+  }
+  .ok { color: #4ade80; }
+  .err { color: #f87171; }
+  .info { color: #60a5fa; }
+  .warn { color: #fbbf24; }
+  #controls {
+    padding: 8px 12px; background: #1a1a1e; display: flex; gap: 8px; flex-wrap: wrap;
+    border-top: 1px solid #333;
+  }
+  #controls button {
+    background: #2563eb; color: #fff; border: none; padding: 6px 14px;
+    border-radius: 6px; font-size: 12px; cursor: pointer; font-family: inherit;
+  }
+  #controls button:hover { background: #3b82f6; }
+  #controls button:disabled { background: #333; color: #666; cursor: default; }
+</style>
+<script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.12.1.js"></script>
+</head>
+<body>
+
+<div id="viewer">
+  <iframe id="model-frame" allow="autoplay; fullscreen; xr-spatial-tracking"
+    allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+</div>
+
+<div id="controls">
+  <button id="btn-annotations" disabled onclick="testAnnotations()">1. Create Test Annotation</button>
+  <button id="btn-goto" disabled onclick="testGotoAnnotation()">2. Goto Annotation</button>
+  <button id="btn-camera" disabled onclick="testCameraControl()">3. Test Camera Control</button>
+  <button id="btn-lock" disabled onclick="testLockCamera()">4. Lock Camera</button>
+  <button id="btn-unlock" disabled onclick="testUnlockCamera()">5. Unlock Camera</button>
+  <button id="btn-nodes" disabled onclick="testGetNodes()">6. Get Node Map</button>
+  <button id="btn-existing" disabled onclick="testExistingAnnotations()">7. List Existing Annotations</button>
+</div>
+
+<div id="log"></div>
+
+<script>
+var api = null;
+var testAnnotationIndex = null;
+
+function log(msg, cls) {
+  var el = document.getElementById('log');
+  var line = document.createElement('div');
+  line.className = cls || 'info';
+  line.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
+  el.appendChild(line);
+  el.scrollTop = el.scrollHeight;
+}
+
+function enableButtons() {
+  document.querySelectorAll('#controls button').forEach(function(b) { b.disabled = false; });
+}
+
+// Init viewer
+var iframe = document.getElementById('model-frame');
+var client = new Sketchfab(iframe);
+
+log('Initializing viewer with brachial plexus model (12e0591a2e794b159576510ddf61abae)...');
+
+client.init('12e0591a2e794b159576510ddf61abae', {
+  success: function(apiObj) {
+    api = apiObj;
+    log('Viewer initialized successfully', 'ok');
+    api.start();
+    api.addEventListener('viewerready', function() {
+      log('Viewer ready!', 'ok');
+
+      // Hide all existing annotations on load
+      api.getAnnotationList(function(err, annotations) {
+        if (!err) {
+          log('Hiding ' + annotations.length + ' built-in annotations...', 'info');
+          annotations.forEach(function(ann, i) {
+            api.hideAnnotation(i, function() {});
+          });
+          log('All built-in annotations hidden', 'ok');
+        }
+        enableButtons();
+      });
+
+      // Get camera position for reference
+      api.getCameraLookAt(function(err, camera) {
+        if (!err) {
+          log('Default camera — eye: [' + camera.position.map(function(v){return v.toFixed(1)}).join(', ') +
+              '] target: [' + camera.target.map(function(v){return v.toFixed(1)}).join(', ') + ']', 'info');
+        }
+      });
+    });
+  },
+  error: function() {
+    log('ERROR: Viewer failed to initialize!', 'err');
+  },
+  autostart: 1,
+  camera: 0,
+  annotations_visible: 0,
+  preload: 1,
+  ui_animations: 0,
+  ui_infos: 0,
+  ui_stop: 0,
+  ui_inspector: 0,
+  ui_hint: 0,
+  ui_ar: 0,
+  ui_help: 0,
+  ui_settings: 0,
+  ui_vr: 0,
+  ui_fullscreen: 0,
+  ui_watermark: 0,
+  ui_theme: 'dark',
+  scrollwheel: 1,
+  transparent: 0
+});
+
+// Test 1: Create annotation
+function testAnnotations() {
+  log('Testing createAnnotationFromWorldPosition...', 'info');
+
+  // First get camera to use as reference
+  api.getCameraLookAt(function(err, camera) {
+    if (err) { log('ERROR getting camera: ' + err, 'err'); return; }
+
+    var eye = [camera.position[0], camera.position[1], camera.position[2]];
+    var target = [camera.target[0], camera.target[1], camera.target[2]];
+
+    // Place annotation at the camera target (center of view)
+    api.createAnnotationFromWorldPosition(
+      target,
+      eye,
+      target,
+      'TEST — Pain Zone',
+      'This is a test annotation created via the API. If you can see this, annotations work!',
+      function(err, index) {
+        if (err) {
+          log('ERROR creating annotation: ' + JSON.stringify(err), 'err');
+        } else {
+          testAnnotationIndex = index;
+          log('Annotation created at index ' + index + '!', 'ok');
+          log('Position: [' + target.map(function(v){return v.toFixed(1)}).join(', ') + ']', 'ok');
+        }
+      }
+    );
+  });
+}
+
+// Test 2: Goto annotation
+function testGotoAnnotation() {
+  if (testAnnotationIndex === null) {
+    log('No test annotation yet — create one first (button 1)', 'warn');
+    return;
+  }
+  log('Testing gotoAnnotation(' + testAnnotationIndex + ')...', 'info');
+  api.gotoAnnotation(testAnnotationIndex, {preventCameraAnimation: false}, function(err, idx) {
+    if (err) {
+      log('ERROR gotoAnnotation: ' + JSON.stringify(err), 'err');
+    } else {
+      log('gotoAnnotation succeeded — camera moved to annotation ' + idx, 'ok');
+    }
+  });
+}
+
+// Test 3: Camera control
+function testCameraControl() {
+  log('Testing setCameraLookAt with 3s animation...', 'info');
+  api.getCameraLookAt(function(err, camera) {
+    if (err) { log('ERROR: ' + err, 'err'); return; }
+
+    // Rotate around to a different angle
+    var eye = camera.position;
+    var target = camera.target;
+    var newEye = [-eye[0], eye[1], -eye[2]]; // flip to opposite side
+
+    api.setCameraLookAt(newEye, target, 3, function(err) {
+      if (err) {
+        log('ERROR setCameraLookAt: ' + JSON.stringify(err), 'err');
+      } else {
+        log('Camera animation complete!', 'ok');
+        api.getCameraLookAt(function(e2, cam2) {
+          if (!e2) {
+            log('New eye: [' + cam2.position.map(function(v){return v.toFixed(1)}).join(', ') + ']', 'info');
+          }
+        });
+      }
+    });
+  });
+}
+
+// Test 4: Lock camera
+function testLockCamera() {
+  log('Testing setUserInteraction(false)...', 'info');
+  api.setUserInteraction(false, function(err) {
+    if (err) {
+      log('ERROR setUserInteraction: ' + JSON.stringify(err), 'err');
+    } else {
+      log('Camera LOCKED — try orbiting, it should not move', 'ok');
+    }
+  });
+}
+
+// Test 5: Unlock camera
+function testUnlockCamera() {
+  log('Testing setUserInteraction(true)...', 'info');
+  api.setUserInteraction(true, function(err) {
+    if (err) {
+      log('ERROR: ' + JSON.stringify(err), 'err');
+    } else {
+      log('Camera UNLOCKED — orbit should work again', 'ok');
+    }
+  });
+}
+
+// Test 6: Get node map
+function testGetNodes() {
+  log('Testing getNodeMap...', 'info');
+  api.getNodeMap(function(err, nodes) {
+    if (err) {
+      log('ERROR getNodeMap: ' + JSON.stringify(err), 'err');
+    } else {
+      var nodeList = Object.keys(nodes);
+      log('Found ' + nodeList.length + ' nodes', 'ok');
+      // Log first 15 node names
+      var count = 0;
+      for (var id in nodes) {
+        if (count >= 15) { log('... and ' + (nodeList.length - 15) + ' more nodes', 'info'); break; }
+        var n = nodes[id];
+        if (n.name && n.type === 'MatrixTransform') {
+          log('  Node: "' + n.name + '" (id: ' + n.instanceID + ')', 'info');
+          count++;
+        }
+      }
+    }
+  });
+}
+
+// Test 7: List existing annotations
+function testExistingAnnotations() {
+  log('Testing getAnnotationList...', 'info');
+  api.getAnnotationList(function(err, annotations) {
+    if (err) {
+      log('ERROR getAnnotationList: ' + JSON.stringify(err), 'err');
+    } else {
+      log('Found ' + annotations.length + ' existing annotations', 'ok');
+      annotations.forEach(function(ann, i) {
+        log('  [' + i + '] ' + (ann.name || '(unnamed)'), 'info');
+        // Get detailed info for first few
+        if (i < 5) {
+          api.getAnnotation(i, function(e2, detail) {
+            if (!e2 && detail.worldPosition) {
+              log('    worldPos: [' + detail.worldPosition.map(function(v){return v.toFixed(1)}).join(', ') + ']', 'info');
+            }
+          });
+        }
+      });
+    }
+  });
+}
+</script>
+</body>
+</html>

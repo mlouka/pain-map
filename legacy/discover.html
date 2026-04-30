@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<script src="https://static.sketchfab.com/api/sketchfab-viewer-1.12.1.js"></script>
+</head><body style="margin:0;background:#000;color:#0f0;font:12px monospace;display:flex;height:100vh;">
+<iframe id="f" style="flex:1;border:none;" allow="autoplay; fullscreen; xr-spatial-tracking"></iframe>
+<pre id="log" style="width:50%;overflow:auto;padding:12px;"></pre>
+<script>
+var L=document.getElementById('log');
+function log(s){L.textContent+=s+'\n';L.scrollTop=L.scrollHeight;}
+var client=new Sketchfab(document.getElementById('f'));
+client.init('12e0591a2e794b159576510ddf61abae',{
+  success:function(api){api.start();api.addEventListener('viewerready',function(){
+    log('=== CAMERA ===');
+    api.getCameraLookAt(function(e,c){
+      if(!e)log('eye: ['+c.position.map(v=>v.toFixed(1))+'] target: ['+c.target.map(v=>v.toFixed(1))+']');
+    });
+    log('\n=== ANNOTATIONS ===');
+    api.getAnnotationList(function(e,anns){
+      if(!e){log('Total: '+anns.length);
+        anns.forEach(function(a,i){
+          api.getAnnotation(i,function(e2,d){
+            if(!e2){
+              var wp=d.worldPosition||d.position||[0,0,0];
+              log('['+i+'] "'+d.name+'" worldPos:['+wp.map(v=>v.toFixed(1))+'] eye:['+
+                (d.eye||[0,0,0]).map(v=>v.toFixed(1))+'] target:['+(d.target||[0,0,0]).map(v=>v.toFixed(1))+']');
+            }
+          });
+        });
+      }
+    });
+    log('\n=== NODES (MatrixTransform) ===');
+    api.getNodeMap(function(e,nodes){
+      if(!e){var count=0;for(var id in nodes){var n=nodes[id];
+        if(n.name&&n.type==='MatrixTransform'){log('"'+n.name+'" id:'+n.instanceID);count++;}
+      }log('Total MatrixTransform nodes: '+count);}
+    });
+  });},
+  error:function(){log('INIT FAILED');},
+  autostart:1,camera:0,preload:1,ui_infos:0,ui_stop:0,ui_inspector:0,ui_hint:0,
+  ui_ar:0,ui_help:0,ui_settings:0,ui_vr:0,ui_fullscreen:0,ui_theme:'dark',
+  ui_annotations:0,annotations_visible:0,ui_watermark:0
+});
+</script></body></html>
