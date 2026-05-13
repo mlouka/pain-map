@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cervical Spine MRI — Summary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --paper: #faf8f3;
+    --paper-warm: #f4ede0;
+    --rule: #c9b896;
+    --rule-soft: #e5dcc7;
+    --accent: #8b3a1f;
+    --muted: #5a5246;
+    --success: #4a6b3a;
+    --info: #2c5773;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Fraunces', Georgia, serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+    font-size: 16px;
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(196, 122, 92, 0.04) 0%, transparent 40%);
+  }
+
+  .page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 48px 36px 72px;
+  }
+
+  .masthead {
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 20px;
+    margin-bottom: 36px;
+  }
+
+  .eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .masthead h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 36px;
+    font-weight: 500;
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    margin-bottom: 10px;
+    font-variation-settings: "opsz" 60, "SOFT" 30;
+    font-optical-sizing: auto;
+  }
+
+  .masthead .subtitle {
+    font-style: italic;
+    font-size: 16px;
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  .meta-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule-soft);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .meta-label {
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 9px;
+    font-weight: 600;
+  }
+
+  .meta-value {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  section {
+    margin: 44px 0;
+  }
+
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+
+  h2 .section-num {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+  }
+
+  h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 500;
+    margin: 22px 0 8px;
+  }
+
+  h4 {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 20px 0 8px;
+  }
+
+  p {
+    margin-bottom: 12px;
+  }
+
+  .report-facsimile {
+    margin: 20px 0;
+    background: #fbfaf6;
+    border: 1px solid var(--rule-soft);
+    font-family: 'SF Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
+    font-size: 12.5px;
+    color: var(--ink);
+  }
+
+  .report-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px 28px;
+    padding: 20px 24px;
+    background: var(--paper-warm);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .report-meta .field {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .report-meta .field-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 3px;
+  }
+
+  .report-meta .field-value {
+    font-size: 12px;
+    color: var(--ink);
+    letter-spacing: 0.01em;
+  }
+
+  .report-doc {
+    padding: 22px 24px 24px;
+    line-height: 1.65;
+  }
+
+  .report-section-title {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    color: var(--accent);
+    margin: 22px 0 8px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  .report-section-title:first-child {
+    margin-top: 0;
+  }
+
+  .report-doc p {
+    margin: 6px 0 12px;
+    font-family: inherit;
+    font-size: 12.5px;
+    color: var(--ink);
+    line-height: 1.7;
+  }
+
+  .report-list {
+    list-style: none;
+    margin: 6px 0 14px;
+    padding-left: 4px;
+    counter-reset: rep-list;
+  }
+
+  .report-list li {
+    counter-increment: rep-list;
+    padding-left: 26px;
+    position: relative;
+    margin: 3px 0;
+    line-height: 1.6;
+  }
+
+  .report-list li::before {
+    content: counter(rep-list) ".";
+    position: absolute;
+    left: 4px;
+    color: var(--muted);
+  }
+
+  .report-levels {
+    display: grid;
+    grid-template-columns: 68px 1fr;
+    gap: 8px 18px;
+    margin: 10px 0 14px;
+    padding: 14px 18px;
+    background: rgba(139, 58, 31, 0.04);
+    border-left: 2px solid var(--rule);
+  }
+
+  .report-levels dt {
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+  }
+
+  .report-levels dd {
+    margin: 0;
+    color: var(--ink);
+    line-height: 1.6;
+  }
+
+  .report-signoff {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 6px 16px;
+    margin-top: 22px;
+    padding-top: 14px;
+    border-top: 1px solid var(--rule-soft);
+    align-items: baseline;
+  }
+
+  .report-signoff .field-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .report-signoff .field-value {
+    font-size: 12px;
+    color: var(--ink);
+  }
+
+  @media (max-width: 540px) {
+    .report-doc { padding: 18px 16px; }
+    .report-meta { padding: 16px; }
+    .report-levels { grid-template-columns: 56px 1fr; padding: 12px 14px; }
+  }
+
+  .figure {
+    margin: 28px 0;
+    background: #0a0a0a;
+    border: 1px solid var(--rule-soft);
+  }
+
+  .figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .figure.figure-diagram {
+    background: #fbfaf6;
+  }
+
+  .figure.figure-diagram svg.cervical-map {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 16px 8px 4px;
+  }
+
+  .figure figcaption {
+    padding: 14px 18px 16px;
+    background: var(--paper-warm);
+    font-family: 'Inter', sans-serif;
+    font-size: 12.5px;
+    color: var(--ink);
+    line-height: 1.6;
+    border-top: 1px solid var(--rule-soft);
+  }
+
+  .figure figcaption .figure-label {
+    display: block;
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  .figure figcaption .figure-title {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+
+  .figure figcaption .figure-body {
+    color: var(--muted);
+  }
+
+  .finding {
+    margin: 18px 0;
+    padding: 12px 0 12px 20px;
+    border-left: 2px solid var(--rule-soft);
+  }
+
+  .finding-quote {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--muted);
+    margin-bottom: 6px;
+    line-height: 1.55;
+  }
+
+  .finding-quote::before { content: '“'; color: var(--accent); }
+  .finding-quote::after  { content: '”'; color: var(--accent); }
+
+  .callout {
+    margin: 22px 0;
+    padding: 18px 22px;
+    border-left: 3px solid;
+    background: var(--paper-warm);
+  }
+
+  .callout-good { border-left-color: var(--success); }
+  .callout-info { border-left-color: var(--info); }
+  .callout-key  { border-left-color: var(--accent); }
+
+  .callout-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: inline-block;
+  }
+
+  .callout-good .callout-label { color: var(--success); }
+  .callout-info .callout-label { color: var(--info); }
+  .callout-key  .callout-label { color: var(--accent); }
+
+  ul.refined-list {
+    list-style: none;
+    margin: 12px 0;
+  }
+
+  ul.refined-list li {
+    padding: 6px 0 6px 22px;
+    position: relative;
+    line-height: 1.55;
+  }
+
+  ul.refined-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 15px;
+    width: 12px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  ol.refined-list {
+    margin: 12px 0;
+    padding-left: 22px;
+    counter-reset: refined;
+    list-style: none;
+  }
+
+  ol.refined-list li {
+    counter-increment: refined;
+    padding: 6px 0 6px 28px;
+    position: relative;
+    line-height: 1.55;
+  }
+
+  ol.refined-list li::before {
+    content: counter(refined, decimal-leading-zero);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  strong { font-weight: 600; }
+  em { font-style: italic; color: var(--muted); }
+
+  .colophon {
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 2px solid var(--ink);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .colophon strong {
+    color: var(--ink);
+    display: block;
+    margin-bottom: 6px;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  @media print {
+    body { background: white; }
+    .page { padding: 16px; max-width: 100%; }
+    section { page-break-inside: avoid; }
+  }
+
+  @media (max-width: 640px) {
+    .page { padding: 32px 20px 48px; }
+    .masthead h1 { font-size: 28px; }
+    h2 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="masthead">
+    <div class="eyebrow">Cervical Spine MRI · Summary</div>
+    <h1>Cervical Spine MRI &mdash; Findings and Interpretation</h1>
+    <p class="subtitle">A plain-language summary of the radiology report, prepared for personal reference and discussion with care providers.</p>
+    <div class="meta-strip">
+      <div class="meta-item"><span class="meta-label">Patient</span><span class="meta-value">Mario Louka</span></div>
+      <div class="meta-item"><span class="meta-label">Study Date</span><span class="meta-value">May 6, 2026</span></div>
+      <div class="meta-item"><span class="meta-label">Radiologist</span><span class="meta-value">Dr. Barbara Hsu</span></div>
+      <div class="meta-item"><span class="meta-label">Facility</span><span class="meta-value">Sharp Rees-Stealy</span></div>
+    </div>
+  </header>
+
+  <section>
+    <h2><span class="section-num">§ 01</span>Clinical summary</h2>
+    <p>The MRI identified a clear structural source for the symptoms: a herniated disc at <strong>C6&ndash;C7</strong> on the right side, pressing on a nerve root, with significant narrowing of the side tunnel that nerve travels through. The spinal cord itself is healthy and uncompressed.</p>
+    <div class="callout callout-key">
+      <span class="callout-label">Summary</span>
+      A real, identifiable herniated disc at C6&ndash;C7 on the right is pinching a nerve root &mdash; no involvement of the spinal cord itself.
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="section-num">§ 02</span>Radiologist's report</h2>
+    <div class="report-facsimile">
+
+      <header class="report-meta">
+        <div class="field"><span class="field-label">Procedure</span><span class="field-value">MR CERVICAL SPINE WO IV CONTRAST</span></div>
+        <div class="field"><span class="field-label">Study Date &amp; Time</span><span class="field-value">2026-05-06 05:34</span></div>
+        <div class="field"><span class="field-label">Institution</span><span class="field-value">Sharp Rees-Stealy (RKM)</span></div>
+        <div class="field"><span class="field-label">Referring Physician</span><span class="field-value">HUIZAR, BRIAN</span></div>
+      </header>
+
+      <div class="report-doc">
+
+        <div class="report-section-title">Technique</div>
+        <ol class="report-list">
+          <li>T1 sagittal</li>
+          <li>T2 FSE and STIR sagittal</li>
+          <li>Multisequence T2 FSE 3D axial</li>
+        </ol>
+
+        <div class="report-section-title">Findings</div>
+        <p>Multiplanar MR imaging of the cervical spine is performed for evaluation of right C8 radicular symptoms. Study is compromised by motion artifact, with repeated sequences. Plain films are dated 2/11/2026 notable for a chronic superior endplate fracture deformity at C5.</p>
+        <p>Disc interspaces maintain normal height and signal. There is no acute fracture or subluxation. Compression deformity at the anterior superior endplate at C5 is chronic without evidence of bone marrow edema. Posterior cortex is preserved. Alignment is normal. Cervical cord contour, caliber, and signal characteristics are grossly normal. Limited visualized structures of the posterior fossa are grossly unremarkable.</p>
+
+        <dl class="report-levels">
+          <dt>C1&ndash;C2</dt><dd>Patent.</dd>
+          <dt>C2&ndash;C3</dt><dd>Patent.</dd>
+          <dt>C3&ndash;C4</dt><dd>Patent.</dd>
+          <dt>C4&ndash;C5</dt><dd>Patent.</dd>
+          <dt>C5&ndash;C6</dt><dd>Apophyseal joint arthrosis. Central canal measures 9.2 mm accompanied by mild to moderate bilateral foraminal narrowing.</dd>
+          <dt>C6&ndash;C7</dt><dd>Broad-based right subarticular disc extrusion. Disc material contacts the budding right C7 nerve root. Central canal is patent but there is moderate to severe bilateral foraminal stenosis, right greater than left.</dd>
+          <dt>C7&ndash;T1</dt><dd>Apophyseal joint hypertrophy. Central canal is patent but there is mild left and moderate right sided foraminal encroachment.</dd>
+        </dl>
+
+        <div class="report-section-title">Impression</div>
+        <p>Multilevel degeneration. At the C6&ndash;7 level, there is a broad-based right subarticular disc extrusion, with disc material contacting the budding right C7 nerve root. Moderate to severe bilateral foraminal stenosis at this level, right greater than left.</p>
+
+        <div class="report-signoff">
+          <span class="field-label">Finalized</span><span class="field-value">2026-05-08</span>
+          <span class="field-label">Radiologist</span><span class="field-value">Barbara Hsu, MD</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="section-num">§ 03</span>Report interpretation</h2>
+
+    <figure class="figure figure-diagram">
+      <svg viewBox="0 0 640 920" class="cervical-map" xmlns="http://www.w3.org/2000/svg"
+           role="img" aria-labelledby="cmap-title cmap-desc">
+        <title id="cmap-title">Cervical spine map with MRI findings</title>
+        <desc id="cmap-desc">Schematic left-side view of the cervical spine from C1 down to T1. Three abnormal levels are highlighted by color: C5&ndash;C6 (mild-moderate, amber), C6&ndash;C7 (severe, rust-red &mdash; primary finding), and C7&ndash;T1 (mild-moderate, amber). The C5 vertebra is shown with a chronic anterior endplate deformity (healed, no inflammation). The C7 nerve root is rendered as irritated to reflect contact from the C6&ndash;C7 disc extrusion.</desc>
+
+        <defs>
+          <linearGradient id="bone" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#b8a888"/>
+            <stop offset="42%" stop-color="#e4d6b8"/>
+            <stop offset="100%" stop-color="#a89878"/>
+          </linearGradient>
+          <linearGradient id="bone-deformed" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#a89078"/>
+            <stop offset="50%" stop-color="#c8b090"/>
+            <stop offset="100%" stop-color="#988068"/>
+          </linearGradient>
+          <linearGradient id="csf" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#e0e6ec"/>
+            <stop offset="50%" stop-color="#f0f4f8"/>
+            <stop offset="100%" stop-color="#d8dde4"/>
+          </linearGradient>
+          <linearGradient id="cord" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#4a4644"/>
+            <stop offset="50%" stop-color="#2e2c2a"/>
+            <stop offset="100%" stop-color="#4a4644"/>
+          </linearGradient>
+          <linearGradient id="disc-normal" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#806848"/>
+            <stop offset="50%" stop-color="#a88868"/>
+            <stop offset="100%" stop-color="#705838"/>
+          </linearGradient>
+          <linearGradient id="disc-mild" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#a07020"/>
+            <stop offset="50%" stop-color="#c89038"/>
+            <stop offset="100%" stop-color="#8a5e18"/>
+          </linearGradient>
+          <linearGradient id="disc-severe" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#6e2818"/>
+            <stop offset="50%" stop-color="#b03a22"/>
+            <stop offset="100%" stop-color="#5a1e10"/>
+          </linearGradient>
+          <linearGradient id="nerve-normal" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#c8b06c"/>
+            <stop offset="100%" stop-color="#9a8050"/>
+          </linearGradient>
+          <radialGradient id="nerve-affected" cx="40%" cy="50%">
+            <stop offset="0%" stop-color="#e85838"/>
+            <stop offset="100%" stop-color="#a82010"/>
+          </radialGradient>
+
+          <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="0.8"/>
+            <feOffset dy="1"/>
+            <feComponentTransfer><feFuncA type="linear" slope="0.25"/></feComponentTransfer>
+            <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+
+          <filter id="finding-glow" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="3.5" result="blur"/>
+            <feFlood flood-color="#a83a20" flood-opacity="0.55"/>
+            <feComposite in2="blur" operator="in" result="glow"/>
+            <feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <style>
+          .cervical-map text { font-family: 'Inter', sans-serif; }
+          .cervical-map .level-tag { font-family: 'SF Mono','Menlo',monospace; font-size: 12px; font-weight: 600; fill: #5a5246; }
+          .cervical-map .level-tag-mild { font-family: 'SF Mono','Menlo',monospace; font-size: 12px; font-weight: 700; fill: #8a6a20; }
+          .cervical-map .level-tag-severe { font-family: 'SF Mono','Menlo',monospace; font-size: 13px; font-weight: 700; fill: #8b3a1f; }
+          .cervical-map .anno-tag { font-size: 9px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; }
+          .cervical-map .anno-tag-mild { fill: #8a6a20; }
+          .cervical-map .anno-tag-severe { fill: #8b3a1f; }
+          .cervical-map .anno-tag-info { fill: #8a7e6e; }
+          .cervical-map .anno-headline { font-size: 11.5px; font-weight: 600; fill: #1a1a1a; }
+          .cervical-map .anno-body { font-size: 10px; fill: #5a5246; }
+          .cervical-map .anno-line { stroke: #8a7e6e; stroke-width: 1; fill: none; stroke-linecap: round; }
+          .cervical-map .anno-line-mild { stroke: #8a6a20; stroke-width: 1.2; fill: none; stroke-linecap: round; }
+          .cervical-map .anno-line-severe { stroke: #8b3a1f; stroke-width: 1.5; fill: none; stroke-linecap: round; }
+          .cervical-map .orient-label { font-size: 8.5px; font-weight: 600; fill: #8a7e6e; letter-spacing: 0.2em; text-transform: uppercase; }
+          .cervical-map .anatomy-label { font-size: 9px; font-weight: 500; fill: #8a7e6e; letter-spacing: 0.04em; }
+
+          @keyframes finding-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+          }
+          @keyframes nerve-flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.45; }
+          }
+          @keyframes line-draw {
+            from { stroke-dashoffset: 240; }
+            to { stroke-dashoffset: 0; }
+          }
+          @keyframes fade-up {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+
+          .cervical-map .primary-pulse {
+            transform-origin: 360px 580px;
+            animation: finding-pulse 2.6s ease-in-out infinite;
+          }
+          .cervical-map .nerve-affected-flicker {
+            animation: nerve-flicker 1.8s ease-in-out infinite;
+          }
+
+          /* Animation hooks — toggle classes on the SVG to enable */
+          .cervical-map.play-draw .anno-line,
+          .cervical-map.play-draw .anno-line-mild,
+          .cervical-map.play-draw .anno-line-severe {
+            stroke-dasharray: 240;
+            stroke-dashoffset: 240;
+            animation: line-draw 1.6s ease-out forwards;
+          }
+          .cervical-map.play-reveal .anno-text {
+            opacity: 0;
+            animation: fade-up 0.8s ease-out forwards;
+            animation-delay: 0.5s;
+          }
+          .cervical-map.play-reveal #anno-c5 { animation-delay: 0.3s; }
+          .cervical-map.play-reveal #anno-c5-c6 { animation-delay: 0.6s; }
+          .cervical-map.play-reveal #anno-c6-c7 { animation-delay: 0.9s; }
+          .cervical-map.play-reveal #anno-c7-t1 { animation-delay: 1.2s; }
+
+          @media (prefers-reduced-motion: reduce) {
+            .cervical-map .primary-pulse,
+            .cervical-map .nerve-affected-flicker { animation: none; }
+          }
+        </style>
+
+        <!-- ORIENTATION -->
+        <g id="orient">
+          <text x="540" y="32" class="orient-label" text-anchor="end">Anterior &#8594;</text>
+          <text x="100" y="32" class="orient-label" text-anchor="start">&#8592; Posterior</text>
+          <text x="38" y="460" class="orient-label" transform="rotate(-90 38 460)" text-anchor="middle">Superior &#8593;&#8595; Inferior</text>
+        </g>
+
+        <!-- VERTEBRAE — drawn first so canal can layer on top -->
+
+        <!-- C1 (Atlas — anterior + posterior arch, ring shape, no body) -->
+        <g id="vert-c1" class="vertebra" transform="translate(364 85)">
+          <!-- Anterior arch -->
+          <path d="M 14 -16 Q 30 -22 46 -10 Q 50 0 46 10 Q 30 22 14 16 Q 8 10 8 0 Q 8 -10 14 -16 Z" fill="url(#bone)" stroke="#80684a" stroke-width="1.1" filter="url(#soft)"/>
+          <!-- Posterior arch -->
+          <path d="M -46 -10 Q -28 -14 -14 -10 Q -8 -4 -8 0 Q -8 4 -14 10 Q -28 14 -46 10 Q -50 4 -50 0 Q -50 -4 -46 -10 Z" fill="url(#bone)" stroke="#80684a" stroke-width="1.1" filter="url(#soft)"/>
+          <!-- Posterior tubercle (mini spinous bump) -->
+          <path d="M -50 -2 Q -75 4 -98 10 Q -90 12 -72 10 Q -56 8 -50 5 Z" fill="url(#bone)" stroke="#80684a" stroke-width="1" filter="url(#soft)"/>
+          <text x="62" y="4" class="level-tag">C1</text>
+          <text x="-46" y="-22" class="anatomy-label" text-anchor="start">atlas</text>
+        </g>
+
+        <!-- C2 (Axis — body + dens projecting up into C1 ring) -->
+        <g id="vert-c2" class="vertebra" transform="translate(365 153)">
+          <!-- Dens (odontoid process) -->
+          <path d="M -10 -28 Q -13 -50 -7 -64 Q 0 -68 7 -64 Q 13 -50 10 -28 Q 0 -22 -10 -28 Z" fill="url(#bone)" stroke="#80684a" stroke-width="1" filter="url(#soft)"/>
+          <!-- Body (organic shape with uncinate hints) -->
+          <path d="M -42 -28 L -36 -34 L -28 -30 Q 0 -34 28 -30 L 36 -34 L 42 -28 C 50 -14 50 14 42 28 Q 0 32 -42 28 C -50 14 -50 -14 -42 -28 Z" fill="url(#bone)" stroke="#80684a" stroke-width="1.3" filter="url(#soft)"/>
+          <!-- Endplate emphasis -->
+          <path d="M -32 -25 Q 0 -28 32 -25" stroke="#5a4828" stroke-width="0.7" fill="none" opacity="0.55"/>
+          <path d="M -32 25 Q 0 28 32 25" stroke="#5a4828" stroke-width="0.7" fill="none" opacity="0.55"/>
+          <!-- Pedicle / lateral mass bridge -->
+          <path d="M -42 -14 Q -52 -12 -56 -4 L -56 4 Q -52 12 -42 14 L -36 14 Q -42 6 -42 0 Q -42 -6 -36 -14 Z" fill="url(#bone)" stroke="#80684a" stroke-width="1"/>
+          <!-- Spinous process -->
+          <path d="M -56 -3 Q -98 4 -150 14 Q -164 17 -168 20 Q -158 22 -140 20 Q -100 16 -56 9 Z" fill="url(#bone)" stroke="#80684a" stroke-width="1.1" filter="url(#soft)"/>
+          <text x="62" y="4" class="level-tag">C2</text>
+          <text x="20" y="-54" class="anatomy-label" text-anchor="start">dens</text>
+          <line x1="6" y1="-50" x2="18" y2="-54" class="anno-line"/>
+        </g>
+
+        <!-- Facet joint marker C2-C3 -->
+        <line x1="294" y1="186" x2="300" y2="208" stroke="#6e5230" stroke-width="0.9" opacity="0.55"/>
+
+        <!-- C3 -->
+        <g id="vert-c3" class="vertebra" transform="translate(366 246)">
+          <path d="M -42 -28 L -36 -34 L -28 -30 Q 0 -34 28 -30 L 36 -34 L 42 -28 C 50 -14 50 14 42 28 Q 0 32 -42 28 C -50 14 -50 -14 -42 -28 Z" fill="url(#bone)" stroke="#80684a" stroke-width="1.3" filter="url(#soft)"/>
+          <path d="M -32 -25 Q 0 -28 32 -25" stroke="#5a4828" stroke-width="0.7" fill="none" opacity="0.55"/>
+          <path d="M -32 25 Q 0 28 32 25" stroke="#5a4828" stroke-width="0.7" fill="none" opacity="0.55"/>
+          <path d="M -42 -14 Q -52 -12 -56 -4 L -56 4 Q -52 12 -42 14 L -36 14 Q -42 6 -42 0 Q -42 -6 -36 -14 Z" fill="url(#bone)" stroke="#80684a" stroke-width="1"/>
+          <path d="M -56 -2 Q -92 4 -132 12 Q -148 16 -154 18 Q -146 20 -130 18 Q -98 14 -56 8 Z" fill="url(#bone)" stroke="#80684a" stroke-width="1.1" filter="url(#soft)"/>
+          <text x="60" y="4" class="level-tag">C3</text>
+        </g>
+
+        <!-- Facet joint marker C3-C4 -->
+        <line x1="294" y1="278" x2="300" y2="302" stroke="#6e5230" stroke-width="0.9" opacity="0.55"/>
+
+        <!-- C4 -->
+        <g id="vert-c4" class="vertebra" transform="translate(367 340)">
+          <path d="M -42 -28 L -36 -34 L -28 -30 Q 0 -34 28 -30 L 36 -34 L 42 -28 C 50 -14 50 14 42 28 Q 0 32 -42 28 C -50 14 -50 -14 -42 -28 Z" fill="url(#bone)" stroke="#80684a" stroke-width="1.3" filter="url(#soft)"/>
+          <path d="M -32 -25 Q 0 -28 32 -25" stroke="#5a4828" stroke-width="0.7" fill="none" opacity="0.55"/>
+          <path d="M -32 25 Q 0 28 32 25" stroke="#5a4828" stroke-width="0.7" fill="none" opacity="0.55"/>
+          <path d="M -42 -14 Q -52 -12 -56 -4 L -56 4 Q -52 12 -42 14 L -36 14 Q -42 6 -42 0 Q -42 -6 -36 -14 Z" fill="url(#bone)" stroke="#80684a" stroke-width="1"/>
+          <path d="M -56 -2 Q -92 4 -132 12 Q -148 16 -154 18 Q -146 20 -130 18 Q -98 14 -56 8 Z" fill="url(#bone)" stroke="#80684a" stroke-width="1.1" filter="url(#soft)"/>
+          <text x="60" y="4" class="level-tag">C4</text>
+        </g>
+
+        <!-- Facet joint marker C4-C5 -->
+        <line x1="294" y1="372" x2="299" y2="396" stroke="#6e5230" stroke-width="0.9" opacity="0.55"/>
+
+        <!-- C5 (chronic anterior-superior endplate deformity) -->
+        <g id="vert-c5" class="vertebra has-deformity" transform="translate(366 443)">
+          <!-- Body with wedged anterior-superior corner -->
+          <path d="M -42 -28 L -36 -34 L -28 -30 Q -6 -32 14 -22 L 26 -19 Q 38 -18 42 -16 C 50 -2 50 16 42 28 Q 0 32 -42 28 C -50 14 -50 -14 -42 -28 Z" fill="url(#bone-deformed)" stroke="#80684a" stroke-width="1.3" filter="url(#soft)"/>
+          <!-- Deformity dashed indicator -->
+          <path d="M 14 -22 Q 26 -20 42 -16" stroke="#6e5230" stroke-width="0.9" stroke-dasharray="3,2" fill="none"/>
+          <circle cx="30" cy="-19" r="2.2" fill="#8a7e6e" opacity="0.7"/>
+          <!-- Inferior endplate (superior is deformed, omitted) -->
+          <path d="M -32 25 Q 0 28 32 25" stroke="#5a4828" stroke-width="0.7" fill="none" opacity="0.55"/>
+          <path d="M -42 -14 Q -52 -12 -56 -4 L -56 4 Q -52 12 -42 14 L -36 14 Q -42 6 -42 0 Q -42 -6 -36 -14 Z" fill="url(#bone)" stroke="#80684a" stroke-width="1"/>
+          <path d="M -56 -2 Q -92 4 -132 12 Q -148 16 -154 18 Q -146 20 -130 18 Q -98 14 -56 8 Z" fill="url(#bone)" stroke="#80684a" stroke-width="1.1" filter="url(#soft)"/>
+          <text x="60" y="4" class="level-tag">C5</text>
+        </g>
+
+        <!-- Facet joint marker C5-C6 (mild arthrosis — doubled to suggest joint changes) -->
+        <line x1="293" y1="476" x2="300" y2="498" stroke="#8a6a20" stroke-width="1.1" opacity="0.7"/>
+        <line x1="297" y1="476" x2="304" y2="498" stroke="#8a6a20" stroke-width="0.7" opacity="0.45"/>
+
+        <!-- C6 -->
+        <g id="vert-c6" class="vertebra" transform="translate(364 534)">
+          <path d="M -42 -28 L -36 -34 L -28 -30 Q 0 -34 28 -30 L 36 -34 L 42 -28 C 50 -14 50 14 42 28 Q 0 32 -42 28 C -50 14 -50 -14 -42 -28 Z" fill="url(#bone)" stroke="#80684a" stroke-width="1.3" filter="url(#soft)"/>
+          <path d="M -32 -25 Q 0 -28 32 -25" stroke="#5a4828" stroke-width="0.7" fill="none" opacity="0.55"/>
+          <path d="M -32 25 Q 0 28 32 25" stroke="#5a4828" stroke-width="0.7" fill="none" opacity="0.55"/>
+          <path d="M -42 -14 Q -52 -12 -56 -4 L -56 4 Q -52 12 -42 14 L -36 14 Q -42 6 -42 0 Q -42 -6 -36 -14 Z" fill="url(#bone)" stroke="#80684a" stroke-width="1"/>
+          <path d="M -56 -2 Q -92 4 -132 12 Q -148 16 -154 18 Q -146 20 -130 18 Q -98 14 -56 8 Z" fill="url(#bone)" stroke="#80684a" stroke-width="1.1" filter="url(#soft)"/>
+          <text x="60" y="4" class="level-tag">C6</text>
+        </g>
+
+        <!-- Facet joint marker C6-C7 (severe stenosis — emphatic, doubled lines) -->
+        <line x1="291" y1="568" x2="300" y2="590" stroke="#8b3a1f" stroke-width="1.3" opacity="0.85"/>
+        <line x1="296" y1="568" x2="305" y2="590" stroke="#8b3a1f" stroke-width="0.9" opacity="0.6"/>
+
+        <!-- C7 (Vertebra prominens — longer, more prominent spinous) -->
+        <g id="vert-c7" class="vertebra" transform="translate(361 627)">
+          <path d="M -42 -28 L -36 -34 L -28 -30 Q 0 -34 28 -30 L 36 -34 L 42 -28 C 50 -14 50 14 42 28 Q 0 32 -42 28 C -50 14 -50 -14 -42 -28 Z" fill="url(#bone)" stroke="#80684a" stroke-width="1.3" filter="url(#soft)"/>
+          <path d="M -32 -25 Q 0 -28 32 -25" stroke="#5a4828" stroke-width="0.7" fill="none" opacity="0.55"/>
+          <path d="M -32 25 Q 0 28 32 25" stroke="#5a4828" stroke-width="0.7" fill="none" opacity="0.55"/>
+          <path d="M -42 -14 Q -52 -12 -56 -4 L -56 4 Q -52 12 -42 14 L -36 14 Q -42 6 -42 0 Q -42 -6 -36 -14 Z" fill="url(#bone)" stroke="#80684a" stroke-width="1"/>
+          <!-- Longer spinous (vertebra prominens) -->
+          <path d="M -56 -2 Q -110 6 -180 18 Q -200 22 -206 24 Q -198 26 -180 24 Q -120 18 -56 10 Z" fill="url(#bone)" stroke="#80684a" stroke-width="1.1" filter="url(#soft)"/>
+          <text x="60" y="4" class="level-tag">C7</text>
+        </g>
+
+        <!-- Facet joint marker C7-T1 -->
+        <line x1="294" y1="660" x2="299" y2="686" stroke="#8a6a20" stroke-width="1" opacity="0.6"/>
+
+        <!-- T1 (transitional, larger body, steeper thoracic-style spinous) -->
+        <g id="vert-t1" class="vertebra" transform="translate(358 727)">
+          <!-- Body (slightly larger) -->
+          <path d="M -48 -36 L -42 -42 L -32 -38 Q 0 -42 32 -38 L 42 -42 L 48 -36 C 56 -16 56 16 48 36 Q 0 40 -48 36 C -56 16 -56 -16 -48 -36 Z" fill="url(#bone)" stroke="#80684a" stroke-width="1.3" filter="url(#soft)"/>
+          <path d="M -38 -33 Q 0 -36 38 -33" stroke="#5a4828" stroke-width="0.7" fill="none" opacity="0.55"/>
+          <path d="M -38 33 Q 0 36 38 33" stroke="#5a4828" stroke-width="0.7" fill="none" opacity="0.55"/>
+          <path d="M -48 -16 Q -58 -14 -62 -4 L -62 4 Q -58 14 -48 16 L -42 16 Q -48 6 -48 0 Q -48 -6 -42 -16 Z" fill="url(#bone)" stroke="#80684a" stroke-width="1"/>
+          <!-- Spinous (steeper angle, thoracic-characteristic) -->
+          <path d="M -62 -2 Q -100 14 -150 28 Q -165 32 -170 34 Q -160 34 -140 30 Q -100 22 -62 10 Z" fill="url(#bone)" stroke="#80684a" stroke-width="1.1" filter="url(#soft)"/>
+          <text x="66" y="4" class="level-tag">T1</text>
+        </g>
+
+        <!-- SPINAL CANAL: CSF + Cord (drawn AFTER vertebrae so cord is visible throughout) -->
+        <g id="canal" aria-label="Spinal canal">
+          <path d="M 268 64 L 268 776" stroke="url(#csf)" stroke-width="26" fill="none" stroke-linecap="round" opacity="0.85"/>
+          <path d="M 268 70 L 268 772" stroke="url(#cord)" stroke-width="11" fill="none" stroke-linecap="round"/>
+          <text x="234" y="60" class="anatomy-label" text-anchor="end">CSF</text>
+          <line x1="239" y1="57" x2="254" y2="57" class="anno-line"/>
+          <text x="234" y="76" class="anatomy-label" text-anchor="end">Cord</text>
+          <line x1="239" y1="73" x2="259" y2="73" class="anno-line"/>
+        </g>
+
+        <!-- DISCS (drawn after canal so disc material sits in front of cord where it protrudes) -->
+        <ellipse cx="360" cy="200" rx="55" ry="9" fill="url(#disc-normal)" stroke="#5a4828" stroke-width="0.9"/>
+        <ellipse cx="360" cy="293" rx="55" ry="9" fill="url(#disc-normal)" stroke="#5a4828" stroke-width="0.9"/>
+        <ellipse cx="361" cy="386" rx="56" ry="9" fill="url(#disc-normal)" stroke="#5a4828" stroke-width="0.9"/>
+
+        <!-- Disc C5-C6 (MILD) -->
+        <g id="disc-c5-c6">
+          <ellipse cx="361" cy="488" rx="56" ry="10" fill="url(#disc-mild)" stroke="#6e4e10" stroke-width="1"/>
+          <path d="M 308 484 Q 296 488 308 492 L 312 491 L 312 485 Z" fill="url(#disc-mild)" stroke="#6e4e10" stroke-width="0.8"/>
+        </g>
+
+        <!-- Disc C6-C7 (SEVERE — primary finding) -->
+        <g id="disc-c6-c7" class="primary-pulse">
+          <ellipse cx="361" cy="580" rx="57" ry="11" fill="url(#disc-severe)" stroke="#481e10" stroke-width="1.1" filter="url(#finding-glow)"/>
+          <!-- Posterior extrusion lobe protruding into canal -->
+          <path d="M 304 574 Q 278 577 256 580 Q 278 583 304 586 Q 310 583 310 580 Q 310 577 304 574 Z" fill="url(#disc-severe)" stroke="#481e10" stroke-width="1.1"/>
+          <!-- Direction indicator (arrowhead pointing posterolateral right) -->
+          <path d="M 296 568 L 268 572 M 268 572 L 274 568 M 268 572 L 274 576" stroke="#8b3a1f" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+        </g>
+
+        <!-- Disc C7-T1 (MILD) -->
+        <g id="disc-c7-t1">
+          <ellipse cx="361" cy="676" rx="56" ry="9" fill="url(#disc-mild)" stroke="#6e4e10" stroke-width="1"/>
+        </g>
+
+        <!-- NERVE ROOTS (drawn on top so they're visible at each level) -->
+        <g id="root-c3"><line x1="306" y1="202" x2="278" y2="210" stroke="url(#nerve-normal)" stroke-width="2.6" stroke-linecap="round"/></g>
+        <g id="root-c4"><line x1="306" y1="295" x2="278" y2="303" stroke="url(#nerve-normal)" stroke-width="2.6" stroke-linecap="round"/></g>
+        <g id="root-c5"><line x1="306" y1="388" x2="278" y2="396" stroke="url(#nerve-normal)" stroke-width="2.6" stroke-linecap="round"/></g>
+        <g id="root-c6"><line x1="306" y1="488" x2="276" y2="496" stroke="url(#nerve-normal)" stroke-width="2.8" stroke-linecap="round"/></g>
+
+        <!-- Irritated C7 nerve root (affected — embedded SMIL animation for irritation pulse) -->
+        <g id="root-c7" class="nerve-affected-flicker">
+          <line x1="306" y1="580" x2="262" y2="588" stroke="url(#nerve-affected)" stroke-width="3.6" stroke-linecap="round"/>
+          <circle cx="288" cy="584" r="3.5" fill="#c83828">
+            <animate attributeName="r" values="3.5;5;3.5" dur="1.8s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="1;0.5;1" dur="1.8s" repeatCount="indefinite"/>
+          </circle>
+        </g>
+
+        <g id="root-c8"><line x1="306" y1="676" x2="278" y2="684" stroke="url(#nerve-normal)" stroke-width="2.6" stroke-linecap="round"/></g>
+        <g id="root-t1"><line x1="304" y1="770" x2="278" y2="778" stroke="url(#nerve-normal)" stroke-width="2.4" stroke-linecap="round"/></g>
+
+        <!-- ANNOTATIONS -->
+        <g id="anno-c5" class="anno-text">
+          <path d="M 416 430 L 462 430 L 462 412" class="anno-line"/>
+          <text x="466" y="405" class="anno-tag anno-tag-info">C5 &middot; Chronic</text>
+          <text x="466" y="422" class="anno-headline">Healed endplate deformity</text>
+          <text x="466" y="436" class="anno-body">No active inflammation.</text>
+          <text x="466" y="448" class="anno-body">Not a current pain source.</text>
+        </g>
+
+        <g id="anno-c5-c6" class="anno-text">
+          <path d="M 418 488 L 462 488" class="anno-line-mild"/>
+          <text x="466" y="477" class="anno-tag anno-tag-mild">C5&ndash;C6 &middot; Mild&ndash;moderate</text>
+          <text x="466" y="491" class="anno-headline">Canal 9.2 mm + facet arthrosis</text>
+          <text x="466" y="505" class="anno-body">Mild-moderate bilateral</text>
+          <text x="466" y="517" class="anno-body">foraminal narrowing.</text>
+        </g>
+
+        <g id="anno-c6-c7" class="anno-text">
+          <path d="M 418 580 L 462 580" class="anno-line-severe"/>
+          <text x="466" y="566" class="anno-tag anno-tag-severe">C6&ndash;C7 &middot; Primary finding</text>
+          <text x="466" y="580" class="anno-headline">Right disc extrusion</text>
+          <text x="466" y="594" class="anno-body">Contacts the right C7 nerve</text>
+          <text x="466" y="606" class="anno-body">root. Moderate-to-severe</text>
+          <text x="466" y="618" class="anno-body">foraminal stenosis (R &gt; L).</text>
+        </g>
+
+        <g id="anno-c7-t1" class="anno-text">
+          <path d="M 418 676 L 462 676" class="anno-line-mild"/>
+          <text x="466" y="666" class="anno-tag anno-tag-mild">C7&ndash;T1 &middot; Mild&ndash;moderate</text>
+          <text x="466" y="680" class="anno-headline">Right foraminal encroachment</text>
+          <text x="466" y="694" class="anno-body">Apophyseal joint hypertrophy.</text>
+          <text x="466" y="706" class="anno-body">Mild left, moderate right.</text>
+        </g>
+
+        <!-- LEGEND -->
+        <g id="legend" transform="translate(70 848)">
+          <text x="0" y="0" class="anno-tag anno-tag-info">Severity key</text>
+          <rect x="0" y="10" width="14" height="10" rx="2" fill="url(#disc-normal)"/>
+          <text x="20" y="19" class="anno-body">Normal level</text>
+          <rect x="100" y="10" width="14" height="10" rx="2" fill="url(#disc-mild)"/>
+          <text x="120" y="19" class="anno-body">Mild&ndash;moderate</text>
+          <rect x="222" y="10" width="14" height="10" rx="2" fill="url(#disc-severe)"/>
+          <text x="242" y="19" class="anno-body">Severe / primary</text>
+          <line x1="370" y1="15" x2="386" y2="15" stroke="url(#nerve-affected)" stroke-width="3.2" stroke-linecap="round"/>
+          <text x="392" y="19" class="anno-body">Irritated nerve root</text>
+        </g>
+      </svg>
+
+      <figcaption>
+        <span class="figure-label">Figure 4 &middot; Cervical spine map</span>
+        <div class="figure-title">Where the findings sit, in context</div>
+        <div class="figure-body">Schematic left-side view of the cervical spine from C1 to T1. The three abnormal levels are color-coded: amber for the mild-moderate findings at C5&ndash;C6 and C7&ndash;T1, rust-red for the primary C6&ndash;C7 disc extrusion that contacts the right C7 nerve root. The C5 vertebra is drawn with its chronic anterior-superior wedging visible. The C7 nerve root is rendered as irritated to reflect contact from the extruded disc material. Spinal cord and surrounding cerebrospinal fluid are shown running uninterrupted through the canal &mdash; consistent with the report's confirmation that the cord itself is uncompressed.</div>
+      </figcaption>
+    </figure>
+
+    <h3>Reassuring findings</h3>
+    <ul class="refined-list">
+      <li><strong>Spinal cord is healthy</strong> &mdash; normal shape, thickness, and signal. No compression, no damage.</li>
+      <li><strong>Discs are well-hydrated and normal height</strong> &mdash; not generally degenerated.</li>
+      <li><strong>No fractures, no instability, no alignment problems.</strong></li>
+      <li><strong>Old C5 fracture is healed</strong> &mdash; no swelling in the bone, back wall intact, not an active pain source.</li>
+      <li><strong>Upper four levels (C1 through C5) are all clear.</strong></li>
+    </ul>
+
+    <h3>Abnormal findings</h3>
+
+    <div class="finding">
+      <div class="finding-quote">At the C5&ndash;6 level, there is apophyseal joint arthrosis. Central canal measures 9.2 mm with mild to moderate bilateral foraminal narrowing.</div>
+      Arthritis in the small facet joints. The main spinal canal is mildly narrowed (9.2 mm; normal is ~12 mm), and the side exit tunnels for nerves are narrowed on both sides in the mild-to-moderate range. A contributing finding, not the primary issue.
+    </div>
+
+    <div class="finding">
+      <div class="finding-quote">At the C6&ndash;7 level, there is a broad-based right subarticular disc extrusion. Disc material contacts the budding right C7 nerve root. Central canal is patent but there is moderate to severe bilateral foraminal stenosis, right greater than left.</div>
+      <strong>Primary finding.</strong> A true herniation (extrusion = more significant than a bulge or protrusion) pushing out to the right and contacting the right C7 nerve root as it emerges from the spinal cord. The side exit tunnel for that nerve is significantly narrowed &mdash; worst on the right. Two hits on the same nerve at the same level. The spinal cord itself is not compressed.
+    </div>
+
+    <figure class="figure figure-diagram">
+      <svg viewBox="0 0 640 470" class="axial-comparison" xmlns="http://www.w3.org/2000/svg"
+           role="img" aria-labelledby="axial-title axial-desc">
+        <title id="axial-title">Axial cross-section comparison: normal vs your C6&ndash;C7</title>
+        <desc id="axial-desc">Two axial (top-down) cross-section views of a cervical disc level. Left: normal anatomy. Right: your C6&ndash;C7 with right subarticular disc extrusion contacting the right C7 nerve root.</desc>
+
+        <defs>
+          <radialGradient id="ax-bone" cx="50%" cy="30%" r="75%">
+            <stop offset="0%" stop-color="#eddec0"/>
+            <stop offset="55%" stop-color="#cfb88a"/>
+            <stop offset="100%" stop-color="#9c8462"/>
+          </radialGradient>
+          <radialGradient id="ax-disc" cx="50%" cy="40%" r="78%">
+            <stop offset="0%" stop-color="#bc9c7c"/>
+            <stop offset="100%" stop-color="#7e6648"/>
+          </radialGradient>
+          <radialGradient id="ax-disc-severe" cx="40%" cy="40%" r="80%">
+            <stop offset="0%" stop-color="#c84a32"/>
+            <stop offset="100%" stop-color="#5a1e10"/>
+          </radialGradient>
+          <radialGradient id="ax-csf" cx="50%" cy="50%" r="60%">
+            <stop offset="0%" stop-color="#f4f8fc"/>
+            <stop offset="100%" stop-color="#c4ced8"/>
+          </radialGradient>
+          <radialGradient id="ax-cord" cx="40%" cy="40%" r="62%">
+            <stop offset="0%" stop-color="#48464a"/>
+            <stop offset="100%" stop-color="#181618"/>
+          </radialGradient>
+          <radialGradient id="ax-nerve-aff" cx="50%" cy="50%">
+            <stop offset="0%" stop-color="#e85838"/>
+            <stop offset="100%" stop-color="#a82010"/>
+          </radialGradient>
+          <linearGradient id="ax-nerve" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#c8b06c"/>
+            <stop offset="100%" stop-color="#806838"/>
+          </linearGradient>
+
+          <filter id="ax-soft" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="0.8"/>
+            <feOffset dy="1"/>
+            <feComponentTransfer><feFuncA type="linear" slope="0.22"/></feComponentTransfer>
+            <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+
+          <filter id="ax-glow" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="2.8" result="blur"/>
+            <feFlood flood-color="#a83a20" flood-opacity="0.55"/>
+            <feComposite in2="blur" operator="in" result="glow"/>
+            <feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <style>
+          .axial-comparison text { font-family: 'Inter', sans-serif; }
+          .axial-comparison .view-label { font-family: 'Fraunces', serif; font-size: 15px; font-weight: 500; fill: #1a1a1a; letter-spacing: -0.005em; }
+          .axial-comparison .view-sub { font-style: italic; font-size: 10.5px; fill: #8a7e6e; }
+          .axial-comparison .orient { font-family: 'SF Mono', 'Menlo', monospace; font-size: 9px; font-weight: 700; letter-spacing: 0.18em; fill: #8a7e6e; }
+          .axial-comparison .anatomy { font-size: 9.5px; font-weight: 500; fill: #6a5e4e; }
+          .axial-comparison .anno-line { stroke: #8a7e6e; stroke-width: 0.9; fill: none; stroke-linecap: round; }
+          .axial-comparison .anno-line-severe { stroke: #8b3a1f; stroke-width: 1.3; fill: none; stroke-linecap: round; }
+          .axial-comparison .anno-tag { font-size: 9px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; fill: #8b3a1f; }
+          .axial-comparison .anno-body { font-size: 10px; fill: #5a5246; }
+          .axial-comparison .anno-italic { font-size: 11px; font-style: italic; fill: #5a5246; }
+
+          @keyframes ax-throb {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+          }
+          @keyframes ax-nerve-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.55; }
+          }
+          .axial-comparison .extrusion-throb { transform-origin: center; transform-box: fill-box; animation: ax-throb 2.6s ease-in-out infinite; }
+          .axial-comparison .nerve-affected-pulse { animation: ax-nerve-pulse 1.8s ease-in-out infinite; }
+          @media (prefers-reduced-motion: reduce) {
+            .axial-comparison .extrusion-throb,
+            .axial-comparison .nerve-affected-pulse { animation: none; }
+          }
+        </style>
+
+        <!-- Header -->
+        <text x="160" y="26" text-anchor="middle" class="view-label">Normal disc level</text>
+        <text x="480" y="26" text-anchor="middle" class="view-label">Your C6&ndash;C7</text>
+        <text x="160" y="44" text-anchor="middle" class="view-sub">Reference anatomy</text>
+        <text x="480" y="44" text-anchor="middle" class="view-sub">Right subarticular extrusion</text>
+
+        <!-- Orientation markers around each view -->
+        <text x="160" y="68" text-anchor="middle" class="orient">A &middot; ANTERIOR</text>
+        <text x="160" y="368" text-anchor="middle" class="orient">P &middot; POSTERIOR</text>
+        <text x="30" y="220" text-anchor="middle" class="orient">PT R</text>
+        <text x="290" y="220" text-anchor="middle" class="orient">PT L</text>
+
+        <text x="480" y="68" text-anchor="middle" class="orient">A &middot; ANTERIOR</text>
+        <text x="480" y="368" text-anchor="middle" class="orient">P &middot; POSTERIOR</text>
+        <text x="350" y="220" text-anchor="middle" class="orient">PT R</text>
+        <text x="610" y="220" text-anchor="middle" class="orient">PT L</text>
+
+        <!-- ============ NORMAL VIEW ============ -->
+        <g id="axial-normal" transform="translate(160 220)">
+          <path d="M -75 -90 Q 0 -108 75 -90 Q 84 -68 80 -50 Q 60 -25 0 -22 Q -60 -25 -80 -50 Q -84 -68 -75 -90 Z" fill="url(#ax-bone)" stroke="#80684a" stroke-width="1.3" filter="url(#ax-soft)"/>
+          <path d="M -70 -84 Q 0 -100 70 -84 Q 78 -65 75 -48 Q 56 -28 0 -25 Q -56 -28 -75 -48 Q -78 -65 -70 -84 Z" fill="url(#ax-disc)" stroke="#5a4828" stroke-width="0.8" opacity="0.55"/>
+          <ellipse cx="0" cy="22" rx="33" ry="28" fill="url(#ax-csf)" stroke="#a8b0b8" stroke-width="0.8"/>
+          <circle cx="0" cy="22" r="11" fill="url(#ax-cord)"/>
+          <ellipse cx="-58" cy="24" rx="18" ry="28" fill="url(#ax-bone)" stroke="#80684a" stroke-width="1" filter="url(#ax-soft)"/>
+          <ellipse cx="58" cy="24" rx="18" ry="28" fill="url(#ax-bone)" stroke="#80684a" stroke-width="1" filter="url(#ax-soft)"/>
+          <ellipse cx="-78" cy="22" rx="8" ry="16" fill="#1a1a1a" opacity="0.18"/>
+          <ellipse cx="78" cy="22" rx="8" ry="16" fill="#1a1a1a" opacity="0.18"/>
+          <circle cx="-78" cy="22" r="3.5" fill="url(#ax-nerve)" stroke="#806838" stroke-width="0.5"/>
+          <circle cx="78" cy="22" r="3.5" fill="url(#ax-nerve)" stroke="#806838" stroke-width="0.5"/>
+          <path d="M -18 56 Q -20 62 -10 72 L 0 112 L 10 72 Q 20 62 18 56 Z" fill="url(#ax-bone)" stroke="#80684a" stroke-width="1.1" filter="url(#ax-soft)"/>
+
+          <!-- Anatomy labels -->
+          <line x1="0" y1="-55" x2="0" y2="-66" class="anno-line"/>
+          <text x="0" y="-74" text-anchor="middle" class="anatomy">vertebral body</text>
+          <line x1="0" y1="35" x2="0" y2="46" class="anno-line"/>
+          <text x="0" y="58" text-anchor="middle" class="anatomy">cord in CSF</text>
+          <line x1="-78" y1="40" x2="-78" y2="50" class="anno-line"/>
+          <text x="-78" y="62" text-anchor="middle" class="anatomy">foramen + nerve</text>
+        </g>
+
+        <!-- ============ AFFECTED VIEW ============ -->
+        <g id="axial-affected" transform="translate(480 220)">
+          <path d="M -75 -90 Q 0 -108 75 -90 Q 84 -68 80 -50 Q 60 -25 0 -22 Q -60 -25 -80 -50 Q -84 -68 -75 -90 Z" fill="url(#ax-bone)" stroke="#80684a" stroke-width="1.3" filter="url(#ax-soft)"/>
+          <path d="M -70 -84 Q 0 -100 70 -84 Q 78 -65 75 -48 Q 56 -28 0 -25 Q -56 -28 -75 -48 Q -78 -65 -70 -84 Z" fill="url(#ax-disc)" stroke="#5a4828" stroke-width="0.8" opacity="0.55"/>
+          <ellipse cx="0" cy="22" rx="33" ry="28" fill="url(#ax-csf)" stroke="#a8b0b8" stroke-width="0.8"/>
+          <circle cx="0" cy="22" r="11" fill="url(#ax-cord)"/>
+          <ellipse cx="-58" cy="24" rx="18" ry="28" fill="url(#ax-bone)" stroke="#80684a" stroke-width="1" filter="url(#ax-soft)"/>
+          <ellipse cx="58" cy="24" rx="18" ry="28" fill="url(#ax-bone)" stroke="#80684a" stroke-width="1" filter="url(#ax-soft)"/>
+          <!-- RIGHT foramen narrowed -->
+          <ellipse cx="-78" cy="22" rx="6.5" ry="13" fill="#1a1a1a" opacity="0.25"/>
+          <!-- LEFT foramen normal -->
+          <ellipse cx="78" cy="22" rx="8" ry="16" fill="#1a1a1a" opacity="0.18"/>
+
+          <!-- DISC EXTRUSION (posterolateral, viewer's left = patient's right) -->
+          <g class="extrusion-throb">
+            <path d="M -58 -22 Q -42 -10 -38 6 Q -45 22 -64 24 Q -78 22 -76 14 Q -68 4 -64 -6 Q -62 -16 -58 -22 Z"
+                  fill="url(#ax-disc-severe)" stroke="#481e10" stroke-width="1" filter="url(#ax-glow)"/>
+          </g>
+
+          <!-- Affected C7 nerve root (irritated, pulsing) -->
+          <g class="nerve-affected-pulse">
+            <circle cx="-78" cy="22" r="4" fill="url(#ax-nerve-aff)" stroke="#a82010" stroke-width="0.5"/>
+            <circle cx="-78" cy="22" r="4" fill="none" stroke="#e85838" stroke-width="0.7" opacity="0.6">
+              <animate attributeName="r" values="4;10;4" dur="1.8s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.6;0;0.6" dur="1.8s" repeatCount="indefinite"/>
+            </circle>
+          </g>
+
+          <!-- Healthy left nerve -->
+          <circle cx="78" cy="22" r="3.5" fill="url(#ax-nerve)" stroke="#806838" stroke-width="0.5"/>
+
+          <!-- Spinous -->
+          <path d="M -18 56 Q -20 62 -10 72 L 0 112 L 10 72 Q 20 62 18 56 Z" fill="url(#ax-bone)" stroke="#80684a" stroke-width="1.1" filter="url(#ax-soft)"/>
+
+          <!-- Annotations -->
+          <path d="M -118 -40 L -84 -8" class="anno-line-severe"/>
+          <text x="-122" y="-44" text-anchor="end" class="anno-tag">Extrusion</text>
+          <text x="-122" y="-30" text-anchor="end" class="anno-body">protrudes into</text>
+          <text x="-122" y="-18" text-anchor="end" class="anno-body">canal &amp; foramen</text>
+
+          <path d="M -118 40 L -88 22" class="anno-line-severe"/>
+          <text x="-122" y="46" text-anchor="end" class="anno-tag">C7 contact</text>
+          <text x="-122" y="60" text-anchor="end" class="anno-body">right nerve root</text>
+          <text x="-122" y="72" text-anchor="end" class="anno-body">irritated</text>
+        </g>
+
+        <!-- Bottom note -->
+        <text x="320" y="450" text-anchor="middle" class="anno-italic">The cord itself remains round and centered in both views &mdash; the herniation contacts the nerve root, not the cord.</text>
+      </svg>
+
+      <figcaption>
+        <span class="figure-label">Figure 5 &middot; Axial cross-section comparison</span>
+        <div class="figure-title">What's happening at C6&ndash;C7, viewed from above</div>
+        <div class="figure-body">Axial (top-down) cross-sections through a cervical disc level. <strong>Left</strong>: normal anatomy &mdash; symmetric canal, both foramina open, both nerve roots intact. <strong>Right</strong>: your C6&ndash;C7 level. A broad-based disc extrusion has pushed posteriorly and toward the right (viewer's left, by radiology convention). The extruded disc material crowds the canal and the right foramen, contacting the emerging right C7 nerve root. The spinal cord remains round and centered in CSF in both views &mdash; the structural problem is at the nerve root, not the cord.</div>
+      </figcaption>
+    </figure>
+
+    <div class="finding">
+      <div class="finding-quote">At the C7&ndash;T1 level, there is apophyseal joint hypertrophy. Central canal is patent but there is mild left and moderate right sided foraminal encroachment.</div>
+      Bony overgrowth of the small joints. Spinal canal open. The side exit tunnels are narrowed &mdash; mildly on the left, moderately on the right. Less severe than the level above.
+    </div>
+
+    <h3>Impression</h3>
+    <p>Multilevel degeneration, with the most clinically significant finding being the right C6&ndash;C7 disc extrusion and the moderate-to-severe foraminal stenosis at that level.</p>
+  </section>
+
+  <section>
+    <h2><span class="section-num">§ 04</span>Key imaging</h2>
+    <p>Three views from the study, each chosen to make one specific finding visible. Two of them (the axial and the C5&ndash;C6 sagittal) carry the radiologist's own red annotations &mdash; the actual marks she made while reading the scan.</p>
+
+    <figure class="figure">
+      <img src="/mri/img/mri-01-orientation-stir-midline.jpg" alt="Sagittal STIR midline view of cervical spine">
+      <figcaption>
+        <span class="figure-label">Figure 1 &middot; Overview</span>
+        <div class="figure-title">Sagittal STIR &mdash; side view, fat suppressed</div>
+        <div class="figure-body">The whole cervical spine in profile. The bright vertical channel is the cerebrospinal fluid bathing the spinal cord (the darker stripe running through the middle of it). The discs sit as brighter horizontal bands between vertebrae. Critically: every vertebra appears uniformly dark, including <strong>C5</strong> (third from the top). STIR makes active inflammation glow bright &mdash; the absence of any bright signal in the C5 body is the visual proof that the old endplate fracture is healed and quiet, exactly as the report describes.</div>
+      </figcaption>
+    </figure>
+
+    <figure class="figure">
+      <img src="/mri/img/mri-02-c6c7-axial-herniation.jpg" alt="Axial T2 CUBE cross-section at C6-C7 with red arrow at right-sided disc herniation">
+      <figcaption>
+        <span class="figure-label">Figure 2 &middot; Primary finding</span>
+        <div class="figure-title">Axial T2 CUBE at C6&ndash;C7 &mdash; the radiologist's key image</div>
+        <div class="figure-body">A horizontal cross-section, viewed as if looking up from the feet (so the patient's <strong>right side is on the viewer's left</strong>, marked "R"). The dark oval at center is the spinal cord; the bright halo around it is cerebrospinal fluid. The radiologist's red arrow marks the disc material pushing in from the right and contacting the right C7 nerve root as it emerges. Notice the asymmetry &mdash; the canal is distorted on the right but intact on the left. The cord itself remains round and uncompressed; the herniation is shouldering against the nerve root, not the cord.</div>
+      </figcaption>
+    </figure>
+
+    <figure class="figure">
+      <img src="/mri/img/mri-03-c5c6-canal-measurement.jpg" alt="Sagittal T2 PROPELLER with 9.2 mm central canal measurement at C5-C6">
+      <figcaption>
+        <span class="figure-label">Figure 3 &middot; Secondary finding</span>
+        <div class="figure-title">Sagittal T2 PROPELLER &mdash; central canal measurement at C5&ndash;C6</div>
+        <div class="figure-body">The radiologist's red line measures the spinal canal at C5&ndash;C6: <strong>9.2 mm</strong>. Normal cervical canals are roughly 12 mm; below 10 mm is considered narrowed. The narrowing here is mild and matches the report's description of "apophyseal joint arthrosis" at this level &mdash; arthritis of the small facet joints pushing inward. The PROPELLER sequence is a motion-corrected re-acquisition: the standard sagittal T2 was compromised by motion artifact, so this cleaner version is what the radiologist used for the measurement.</div>
+      </figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2><span class="section-num">§ 05</span>Clinical presentation</h2>
+
+    <ul class="refined-list">
+      <li><strong>Neck pain</strong> &mdash; primary, ongoing, significant.</li>
+      <li><strong>Right arm nerve pain</strong> &mdash; radiates down the arm to the elbow, along the triceps. Does not extend past the elbow.</li>
+      <li><strong>No weakness</strong> in the arm or hand.</li>
+      <li><strong>Worse</strong> looking up or turning the head to the right.</li>
+      <li><strong>Better</strong> lying flat on the back.</li>
+      <li><strong>Working:</strong> gabapentin and acupuncture have both substantially helped the arm nerve pain.</li>
+      <li><strong>Not yet working:</strong> the neck pain remains largely unchanged.</li>
+    </ul>
+
+    <figure class="figure figure-diagram">
+      <svg viewBox="0 0 600 520" class="dermatome" xmlns="http://www.w3.org/2000/svg"
+           role="img" aria-labelledby="derm-title derm-desc">
+        <title id="derm-title">C7 nerve distribution and your symptomatic zone</title>
+        <desc id="derm-desc">A simplified anterior-view body silhouette showing the right arm. The full academic C7 dermatome is shaded amber along the lateral arm and extending to the middle finger. The user's actual symptomatic zone (upper arm along the triceps, stopping at the elbow) is overlaid in rust-red.</desc>
+
+        <defs>
+          <linearGradient id="derm-skin" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#f4e6cc"/>
+            <stop offset="100%" stop-color="#d8c2a0"/>
+          </linearGradient>
+          <linearGradient id="derm-c7" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#d8a040" stop-opacity="0.55"/>
+            <stop offset="100%" stop-color="#b88020" stop-opacity="0.45"/>
+          </linearGradient>
+          <linearGradient id="derm-affected" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#c83830" stop-opacity="0.85"/>
+            <stop offset="100%" stop-color="#982020" stop-opacity="0.8"/>
+          </linearGradient>
+          <filter id="derm-soft">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="0.6"/>
+            <feOffset dy="1"/>
+            <feComponentTransfer><feFuncA type="linear" slope="0.18"/></feComponentTransfer>
+            <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <style>
+          .dermatome text { font-family: 'Inter', sans-serif; }
+          .dermatome .label { font-size: 10.5px; font-weight: 500; fill: #5a5246; }
+          .dermatome .label-tag { font-size: 9px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; }
+          .dermatome .label-affected { fill: #8b3a1f; }
+          .dermatome .label-muted { fill: #8a7e6e; }
+          .dermatome .label-body { font-size: 10.5px; fill: #1a1a1a; font-weight: 500; }
+          .dermatome .anno-line { stroke: #8a7e6e; stroke-width: 1; fill: none; stroke-linecap: round; }
+          .dermatome .anno-line-severe { stroke: #8b3a1f; stroke-width: 1.3; fill: none; stroke-linecap: round; }
+          .dermatome .legend-text { font-size: 10px; fill: #5a5246; }
+
+          @keyframes derm-nerve-pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.15); opacity: 0.7; }
+          }
+          .dermatome .nerve-marker { transform-origin: 290px 132px; animation: derm-nerve-pulse 1.8s ease-in-out infinite; }
+          @media (prefers-reduced-motion: reduce) {
+            .dermatome .nerve-marker { animation: none; }
+          }
+        </style>
+
+        <!-- Body silhouette -->
+        <!-- Head -->
+        <ellipse cx="320" cy="58" rx="34" ry="42" fill="url(#derm-skin)" stroke="#a08868" stroke-width="1.2" filter="url(#derm-soft)"/>
+        <!-- Neck -->
+        <path d="M 298 95 L 342 95 L 350 122 L 290 122 Z" fill="url(#derm-skin)" stroke="#a08868" stroke-width="1.2" filter="url(#derm-soft)"/>
+        <!-- Torso -->
+        <path d="M 220 132 Q 260 122 320 120 Q 380 122 420 132 L 415 220 Q 410 320 380 350 L 260 350 Q 230 320 225 220 Z" fill="url(#derm-skin)" stroke="#a08868" stroke-width="1.2" filter="url(#derm-soft)"/>
+
+        <!-- LEFT arm (viewer right, patient left — hinted, semi-transparent for context only) -->
+        <g opacity="0.5">
+          <path d="M 415 138 Q 422 152 425 180 L 428 280 Q 430 320 432 360 L 458 360 Q 458 320 456 280 L 454 180 Q 450 152 442 138 Z" fill="url(#derm-skin)" stroke="#a08868" stroke-width="1"/>
+          <path d="M 432 365 Q 434 400 436 430 L 458 430 Q 458 400 456 365 Z" fill="url(#derm-skin)" stroke="#a08868" stroke-width="1"/>
+          <path d="M 436 433 Q 440 458 445 478 L 464 478 Q 462 458 460 433 Z" fill="url(#derm-skin)" stroke="#a08868" stroke-width="1"/>
+        </g>
+
+        <!-- RIGHT arm (viewer left, patient right — the focus) -->
+        <g id="right-arm">
+          <!-- Upper arm -->
+          <path d="M 225 138 Q 218 152 215 180 L 212 280 L 244 285 L 263 280 L 260 180 Q 257 152 250 138 Z" fill="url(#derm-skin)" stroke="#a08868" stroke-width="1.3" filter="url(#derm-soft)"/>
+          <!-- Forearm -->
+          <path d="M 212 288 Q 208 320 205 360 L 233 365 L 256 360 Q 253 320 252 288 L 244 288 Z" fill="url(#derm-skin)" stroke="#a08868" stroke-width="1.3" filter="url(#derm-soft)"/>
+          <!-- Wrist + hand (palm) -->
+          <path d="M 207 365 Q 204 395 208 425 L 234 430 L 254 425 Q 252 395 251 365 L 233 363 Z" fill="url(#derm-skin)" stroke="#a08868" stroke-width="1.3" filter="url(#derm-soft)"/>
+          <!-- Fingers (simplified) -->
+          <path d="M 208 428 Q 207 455 211 478 L 220 480 L 222 432 Z" fill="url(#derm-skin)" stroke="#a08868" stroke-width="1"/>
+          <path d="M 222 432 L 222 480 L 232 482 L 234 432 Z" fill="url(#derm-skin)" stroke="#a08868" stroke-width="1"/>
+          <path d="M 234 432 L 234 482 L 244 480 L 244 432 Z" fill="url(#derm-skin)" stroke="#a08868" stroke-width="1"/>
+          <path d="M 244 432 L 244 478 L 252 475 L 254 428 Z" fill="url(#derm-skin)" stroke="#a08868" stroke-width="1"/>
+        </g>
+
+        <!-- C7 DERMATOME — academic full distribution (amber band on lateral arm, forearm, middle finger) -->
+        <g id="dermatome-c7-full">
+          <!-- Lateral upper arm -->
+          <path d="M 215 140 L 235 140 L 230 280 L 212 280 Q 210 220 213 180 Z" fill="url(#derm-c7)" stroke="none"/>
+          <!-- Lateral forearm -->
+          <path d="M 212 290 L 230 290 L 225 360 L 208 360 Z" fill="url(#derm-c7)" stroke="none"/>
+          <!-- Hand back / lateral -->
+          <path d="M 209 365 L 226 365 L 225 425 L 209 425 Z" fill="url(#derm-c7)" stroke="none"/>
+          <!-- Middle finger (the 3rd finger) -->
+          <path d="M 232 432 L 244 432 L 244 482 L 232 482 Z" fill="url(#derm-c7)" stroke="#a07028" stroke-width="0.5"/>
+        </g>
+
+        <!-- AFFECTED ZONE — user's actual symptomatic area (upper arm to elbow, triceps band) -->
+        <g id="dermatome-affected">
+          <path d="M 215 142 L 234 142 L 230 280 L 212 280 Q 210 220 213 180 Z" fill="url(#derm-affected)" stroke="#8b3a1f" stroke-width="1.2"/>
+        </g>
+
+        <!-- C7 nerve root marker at neck/shoulder junction -->
+        <g class="nerve-marker">
+          <circle cx="290" cy="132" r="5" fill="#c83828"/>
+          <circle cx="290" cy="132" r="5" fill="none" stroke="#e85838" stroke-width="0.8" opacity="0.7">
+            <animate attributeName="r" values="5;12;5" dur="1.8s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.7;0;0.7" dur="1.8s" repeatCount="indefinite"/>
+          </circle>
+        </g>
+
+        <!-- ANNOTATIONS -->
+        <!-- C7 nerve root label -->
+        <path d="M 290 132 L 130 110 L 80 110" class="anno-line-severe"/>
+        <text x="76" y="100" text-anchor="end" class="label-tag label-affected">C7 nerve root</text>
+        <text x="76" y="115" text-anchor="end" class="label">at the C6&ndash;C7 level</text>
+        <text x="76" y="128" text-anchor="end" class="label">where extrusion contacts it</text>
+
+        <!-- Affected zone label -->
+        <path d="M 212 210 L 130 240 L 80 240" class="anno-line-severe"/>
+        <text x="76" y="232" text-anchor="end" class="label-tag label-affected">What you feel</text>
+        <text x="76" y="247" text-anchor="end" class="label-body">Right arm pain along the triceps,</text>
+        <text x="76" y="260" text-anchor="end" class="label">stopping at the elbow.</text>
+
+        <!-- Pain stops at elbow indicator -->
+        <line x1="210" y1="282" x2="195" y2="282" class="anno-line-severe"/>
+        <text x="190" y="278" text-anchor="end" class="label-tag label-affected">elbow</text>
+        <text x="190" y="291" text-anchor="end" class="label">pain stops here</text>
+
+        <!-- Full C7 zone label (academic, beyond user's symptoms) -->
+        <path d="M 240 470 L 320 470 L 360 470" class="anno-line"/>
+        <text x="364" y="464" text-anchor="start" class="label-tag label-muted">Academic C7 zone</text>
+        <text x="364" y="479" text-anchor="start" class="label">extends to middle finger.</text>
+        <text x="364" y="492" text-anchor="start" class="label">You don't feel pain here &mdash;</text>
+        <text x="364" y="505" text-anchor="start" class="label">consistent with partial</text>
+        <text x="364" y="518" text-anchor="start" class="label">nerve irritation, not full block.</text>
+
+        <!-- Legend -->
+        <g transform="translate(370 140)">
+          <text x="0" y="0" class="label-tag label-muted">Color key</text>
+          <rect x="0" y="10" width="16" height="11" fill="url(#derm-c7)" stroke="#a07028" stroke-width="0.5"/>
+          <text x="22" y="20" class="legend-text">Academic C7 dermatome</text>
+          <rect x="0" y="32" width="16" height="11" fill="url(#derm-affected)" stroke="#8b3a1f" stroke-width="0.8"/>
+          <text x="22" y="42" class="legend-text label-affected" style="font-weight: 600;">Your symptomatic zone</text>
+        </g>
+      </svg>
+
+      <figcaption>
+        <span class="figure-label">Figure 6 &middot; C7 dermatome map</span>
+        <div class="figure-title">Why your arm pain pattern matches the imaging</div>
+        <div class="figure-body">A dermatome is the region of skin innervated by a single nerve root. The <strong>C7 nerve</strong> &mdash; the one being irritated at the C6&ndash;C7 level &mdash; supplies sensation along the lateral upper arm (over the triceps), down the lateral forearm, and into the middle finger. Your actual symptomatic area (shown in rust-red) covers only the proximal portion of that zone, stopping at the elbow. This is exactly what one would expect from a <em>partial</em> nerve root irritation by contact (not a full nerve compression): the most proximal sensation territory lights up first, and the more distal zones (forearm, middle finger) are spared. The match between your symptom map and the imaging finding is high-confidence clinicoradiographic correlation.</div>
+      </figcaption>
+    </figure>
+
+    <div class="callout callout-good">
+      <span class="callout-label">Clinical correlation</span>
+      The pattern of arm pain (triceps to elbow, worse with neck extension and right rotation) corresponds with the right C6&ndash;C7 disc finding. The arm pain's dual response to <strong>gabapentin</strong> (which dampens hyperactive nerve signaling) and <strong>acupuncture</strong> (which modulates pain through different neurosomatic pathways) is consistent with a neuropathic origin &mdash; two mechanistically distinct therapies converging on the same nerve-mediated pain. The neck pain persisting through both treatments suggests a different mechanism &mdash; likely axial pain from the disc and surrounding facet joints &mdash; which may need a different treatment approach.
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="section-num">§ 06</span>Assessment and treatment plan</h2>
+
+    <p>On the spectrum of cervical spine MRI findings, this is a meaningful but non-emergent picture. There is a clear structural explanation for the symptoms, but no feature mandating surgery:</p>
+
+    <ul class="refined-list">
+      <li>No spinal cord compression or signal change</li>
+      <li>No fracture or instability</li>
+      <li>No tumor, mass, or infection</li>
+      <li>No progressive weakness or neurologic deficit</li>
+    </ul>
+
+    <p>The standard pathway begins with conservative care. The encouraging data point: a substantial majority of cervical disc herniations of this type improve significantly without surgery within 6 to 12 months. Current state &mdash; the arm nerve pain has responded well to ongoing conservative measures; the persistent neck pain is now the primary unresolved symptom and the focus of further treatment.</p>
+
+    <h3>Conservative treatment pathway</h3>
+    <ol class="refined-list">
+      <li><strong>Physical therapy</strong> &mdash; in progress.</li>
+      <li><strong>Acupuncture</strong> &mdash; in progress; has substantially helped the arm nerve pain.</li>
+      <li><strong>Cervical traction / non-surgical decompression</strong> &mdash; gentle mechanical stretching of the cervical spine that opens space around the affected nerve root. Available as inexpensive home devices (over-the-door rigs, pneumatic neck collars) or as in-clinic decompression-table sessions. Low risk, modest but real evidence for cervical radiculopathy; commonly paired with physical therapy. Not yet trialed. <em>Distinct from surgical decompression below &mdash; same word, completely different intervention.</em></li>
+      <li><strong>Neuropathic medication (gabapentin)</strong> &mdash; in progress; helping the arm pain.</li>
+      <li><strong>Oral corticosteroid burst</strong> (e.g., Medrol dose pack) &mdash; can rapidly calm an inflamed nerve root. Not yet trialed.</li>
+      <li><strong>Cervical epidural steroid injection (CESI)</strong> &mdash; image-guided injection of steroid around the affected nerve root. Reported meaningful relief in 60&ndash;80% of patients with this presentation. <em>High priority as a next step for the residual neck pain and any breakthrough arm pain.</em></li>
+      <li><strong>Surgical decompression</strong> (anterior cervical discectomy and fusion / laminectomy / disc replacement) &mdash; structural removal of disc or bone material to physically open space for the nerve. Reserved for failure of conservative care or progressive neurologic deficit.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2><span class="section-num">§ 07</span>Consultation questions</h2>
+
+    <h4>Diagnosis</h4>
+    <ol class="refined-list">
+      <li>Can you walk through the MRI as you see it, and confirm what's driving my symptoms?</li>
+      <li>Would you order an EMG to objectively confirm which nerve is affected, or is the clinical and imaging picture already clear enough?</li>
+    </ol>
+
+    <h4>Immediate pain management</h4>
+    <ol class="refined-list">
+      <li>Am I a candidate for a cervical epidural steroid injection? Which approach and at which level, and how soon can it happen?</li>
+      <li>Is a short oral steroid course reasonable to try in the interim?</li>
+      <li>My neck pain isn't responding to gabapentin or acupuncture (both of which have helped the arm pain). What's your approach to the neck pain component specifically?</li>
+      <li>Is cervical traction / non-surgical decompression a reasonable thing to try, either at home or in clinic? Any concerns given the C6&ndash;C7 extrusion?</li>
+    </ol>
+
+    <h4>Indications for surgery</h4>
+    <ol class="refined-list">
+      <li>What specific criteria would push you to recommend surgery? What would need to develop or fail before that's the right call?</li>
+      <li>What are the risks of waiting? If I stay conservative for 6&ndash;12 months, what's the chance things get permanently worse versus improving?</li>
+    </ol>
+
+    <h4>Red flag symptoms</h4>
+    <ol class="refined-list">
+      <li>What red-flag symptoms should prompt an urgent call or ER visit?</li>
+    </ol>
+  </section>
+
+  <footer class="colophon">
+    <strong>About this document</strong>
+    <p>Personal reference prepared to facilitate discussion with care providers. Consolidates the radiologist's report, plain-language explanation, current symptoms, and questions for upcoming consultations.</p>
+    <p style="margin-top: 10px;">For an interactive 3D view of the cervical anatomy and brachial plexus involved in these findings, see the related pain map at <a href="https://spine.louka.cc/" style="color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule);">spine.louka.cc</a>.</p>
+    <p style="margin-top: 10px;"><em>Educational reference only. Not medical advice. All treatment decisions should be made in consultation with licensed clinicians.</em></p>
+  </footer>
+
+</div>
+</body>
+</html>
